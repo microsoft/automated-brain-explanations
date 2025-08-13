@@ -105,7 +105,9 @@ You are a scientific agent tasked with generating useful questions for linearly 
 
 Brainstorm some questions that could be useful.
 Return a python list of strings and nothing else.
-Each question should be fairly short and not contain many examples.
+Each question should be concise.
+Each question should not contain many examples.
+Each question should ask about one concept rather than joining together unrelated concepts.
 Each question must start with "Does the input" and end with "?".
 Example: ["Does the input mention a location?", "Does the input mention time?", "Does the input contain a proper noun?"]
 """.strip()
@@ -170,7 +172,9 @@ Add new questions that capture potentially missing aspects.
 Do not needlessly reword existing questions.
 Output at least as many questions as there are in the input list, likely exactly repeating at least some of the questions.
 Return a python list of strings and nothing else.
-Each question should be fairly short and not contain many examples.
+Each question should be concise.
+Each question should not contain many examples.
+Each question should ask about one concept rather than joining together unrelated concepts.
 Each question must start with "Does the input" and end with "?". It is very important that every question starts with "Does the input".
 Example output: ["Does the input mention a location?", "Does the input mention time?", "Does the input contain a proper noun?"]
 """.strip()
