@@ -9,7 +9,7 @@
 Along the way, we've used LLMs to help us predict and explain patterns in this data and found a bunch of cool things!
 This repo contains code for doing these analyses & applying the tools we've developed to various domains.
 
-### Reference
+-----
 **This repo contains code underlying 2 neuroscience studies:**
 
 <details>
@@ -19,7 +19,7 @@ This repo contains code for doing these analyses & applying the tools we've deve
 Representations from large language models are highly effective at predicting BOLD fMRI responses to language stimuli. However, these representations are largely opaque: it is unclear what features of the language stimulus drive the response in each brain area. We present generative causal testing (GCT), a framework for generating concise explanations of language selectivity in the brain from predictive models and then testing those explanations in follow-up experiments using LLM-generated stimuli. This approach is successful at explaining selectivity both in individual voxels and cortical regions of interest (ROIs), including newly identified microROIs in prefrontal cortex. We show that explanatory accuracy is closely related to the predictive power and stability of the underlying predictive models. Finally, we show that GCT can dissect fine-grained differences between brain areas with similar functional selectivity. These results demonstrate that LLMs can be used to bridge the widening gap between data-driven models and formal scientific theories.
 </details>
 <details>
-<summary>Evaluating scientific theories as predictive models in language neuroscience (Singh*, Antonello*, et al. 2024, in prep)
+<summary>Evaluating scientific theories as predictive models in language neuroscience (<a href="https://www.biorxiv.org/content/10.1101/2025.08.12.669958v1">Singh*, Antonello*, et al. 2025, bioRxiv</a>)
 </summary>
 <br>
 Modern data-driven encoding models are highly effective at predicting brain responses
@@ -28,15 +28,15 @@ i.e. what features of the stimulus drive the response in each brain area? We pre
 </details>
 <br>
 
-**This repo also contains code for experiments in 3 ML papers** (for a simple scikit-learn interface to use these, see [imodelsX](https://github.com/csinva/imodelsX)):
+**This repo also contains code for experiments in 3 ML studies** (for a simple scikit-learn interface to use these, see [imodelsX](https://github.com/csinva/imodelsX)):
 <details>
-<summary>Augmenting interpretable models with large language models during training (<a href="https://www.nature.com/articles/s41467-023-43713-1">Singh et al. 2023, Nature communications</a>)
+<summary>Aug-imodels: Augmenting interpretable models with large language models during training (<a href="https://www.nature.com/articles/s41467-023-43713-1">Singh et al. 2023, Nature communications</a>)
 </summary>
 <br>
 Recent large language models (LLMs), such as ChatGPT, have demonstrated remarkable prediction performance for a growing array of tasks. However, their proliferation into high-stakes domains and compute-limited settings has created a burgeoning need for interpretability and efficiency. We address this need by proposing Aug-imodels, a framework for leveraging the knowledge learned by LLMs to build extremely efficient and interpretable prediction models. Aug-imodels use LLMs during fitting but not during inference, allowing complete transparency and often a speed/memory improvement of greater than 1000x for inference compared to LLMs. We explore two instantiations of Aug-imodels in natural-language processing: Aug-Linear, which augments a linear model with decoupled embeddings from an LLM and Aug-Tree, which augments a decision tree with LLM feature expansions. Across a variety of text-classification datasets, both outperform their non-augmented, interpretable counterparts. Aug-Linear can even outperform much larger models, e.g. a 6-billion parameter GPT-J model, despite having 10,000x fewer parameters and being fully transparent. We further explore Aug-imodels in a natural-language fMRI study, where they generate interesting interpretations from scientific data.
 </details>
 <details>
-<summary>QA-Emb: Crafting interpretable Embeddings by asking LLMs questions (<a href="https://arxiv.org/abs/2405.16714">Benara*, Singh* et al. 2024, NeurIPS</a>)
+<summary>QA-Emb: Crafting interpretable Embeddings by asking LLMs questions (<a href="https://arxiv.org/abs/2405.16714">Benara*, Singh*, et al. 2024, NeurIPS</a>)
 </summary>
 <br>
 Large language models (LLMs) have rapidly improved text embeddings for a growing array of natural-language processing tasks. However, their opaqueness and proliferation into scientific domains such as neuroscience have created a growing need for interpretability. Here, we ask whether we can obtain interpretable embeddings through LLM prompting. We introduce question-answering embeddings (QA-Emb), embeddings where each feature represents an answer to a yes/no question asked to an LLM. Training QA-Emb reduces to selecting a set of underlying questions rather than learning model weights.<br>
@@ -48,7 +48,6 @@ We use QA-Emb to flexibly generate interpretable models for predicting fMRI voxe
 <br>
 SASC takes in a text module and produces a natural explanation for it that describes what it types of inputs elicit the largest response from the module (see Fig below). The GCT paper tests this in detail in an fMRI setting.
 <br>
-<img src="https://microsoft.github.io/automated-brain-explanations/fig.svg?sanitize=True&kill_cache=1" width="90%">
 
 SASC is similar to the nice [concurrent paper](https://github.com/openai/automated-interpretability) by OpenAI, but simplifies explanations to describe the function rather than produce token-level activations. This makes it simpler/faster, and makes it more effective at describing semantic functions from limited data (e.g. fMRI voxels) but worse at finding patterns that depend on sequences / ordering.
 
@@ -69,6 +68,8 @@ explanation_dict = explain_module_sasc(
 ```
 </details>
 <br>
+
+Other studies that build off the codebase here: [Shimizu et al. 2025](https://arxiv.org/abs/2507.16080), [Kim et al. 2024](https://arxiv.org/abs/2411.00066), [Zhuang et al. 2025](https://arxiv.org/abs/2410.05629)
 
 ### Setting up
 
