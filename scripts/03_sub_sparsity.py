@@ -39,7 +39,7 @@ params_shared_dict = {
     'predict_subset': ['all', 'prefrontal', 'occipital', 'sensorimotor', 'cingulate', 'insula', 'parietal', 'temporal'],
     'seed': range(1),
     'feature_selection_frac': [1],
-    'feature_selection_max_iter': [1000],
+    'feature_selection_max_iter': [100],
     'feature_selection_pc_components': [10],
 
     # subsets for agentic stab selection (all was already run originally, but with higher feature_selection_frac)

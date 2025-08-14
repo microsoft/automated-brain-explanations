@@ -37,11 +37,16 @@ def get_selected_coef(args, feature_selection_stability_seeds: int, seed: int,
         print('nonzero stable', coef_nonzero.sum())
         return coef_nonzero
 
+
+    suffix_pc = ''
     if args.feature_selection_pc_components > 0:
-        cache_dir = join(config.FMRI_DIR_BLOB, 'qa', f'sparse_feats_shared_pc={args.feature_selection_pc_components}')
-    else:
-        cache_dir = join(config.FMRI_DIR_BLOB, 'qa', 'sparse_feats_shared')
-    
+        suffix_pc = f'_pc={args.feature_selection_pc_components}'
+    suffix_iter = ''
+    if args.feature_selection_max_iter != 5000:
+        suffix_iter = f'_iter={args.feature_selection_max_iter}'
+
+    cache_dir = join(config.FMRI_DIR_BLOB, 'qa', f'sparse_feats_shared{suffix_pc}{suffix_iter}')
+
     cache_file = join(
         cache_dir,
         args.predict_subset,
