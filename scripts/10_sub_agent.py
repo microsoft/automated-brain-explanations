@@ -18,9 +18,9 @@ params_shared_dict = {
 
 
     # 'subject': ['UTS02'],
-    'seed': [1, 2],
+    'seed': [1],
     'subject': [f'UTS0{k}' for k in range(1, 4)],
-    'save_dir': ['/home/chansingh/mntv1/deep-fMRI/encoding/aug11_agentic'],
+    'save_dir': ['/home/chansingh/mntv1/deep-fMRI/encoding/aug19_agentic'],
     # 'predict_subset': ['prefrontal', 'occipital', 'sensorimotor', 'cingulate', 'insula', 'parietal', 'temporal'],
     'predict_subset': ['all'], #, 'prefrontal'],
 
@@ -29,9 +29,14 @@ params_shared_dict = {
     'qa_batch_size': [128], 
 
     
-    'num_agent_epochs': [20],
-    # 'agent_checkpoint': ['o4-mini', 'gpt-4.1'],
-    'agent_checkpoint': ['gpt-5'],
+    'agent_checkpoint': ['o4-mini', 'gpt-4.1', 'gpt-5'],
+    # 'num_agent_epochs': [25],
+    # 'num_questions_brainstorm_target': [25],
+    # 'num_questions_increment_target': [25],
+    
+    'num_agent_epochs': [40],
+    'num_questions_brainstorm_target': [10],
+    'num_questions_increment_target': [10],
 }
 
 params_coupled_dict = {}
@@ -62,10 +67,10 @@ submit_utils.run_args_list(
     args_list,
     script_name=script_name,
     unique_seeds='seed_stories',
-    amlt_kwargs=amlt_kwargs,
+    # amlt_kwargs=amlt_kwargs,
     # n_cpus=8,
     # actually_run=False,
-    # gpu_ids=[[2, 3]],
+    gpu_ids=[0, 1, 2, 3],
     repeat_failed_jobs=True,
     shuffle=True,
     cmd_python=f'export HF_TOKEN={open(expanduser("~/.HF_TOKEN"), "r").read().strip()}; .venv/bin/python',

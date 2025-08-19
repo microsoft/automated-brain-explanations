@@ -142,6 +142,10 @@ def add_main_args(parser):
                         help='Number of top errors to use for agent revisions (if feature_space is qa_agent')
     parser.add_argument('--topk_agent_correlated_questions', type=int, default=15,
                         help='Number of top correlated questions to use for agent revisions (if feature_space is qa_agent)')
+    parser.add_argument('--num_questions_brainstorm_target', type=int, default=25,
+                        help='Number of questions to target for initial brainstorming (if feature_space is qa_agent)')
+    parser.add_argument('--num_questions_increment_target', type=int, default=25,
+                        help='Number of questions to target for incrementing the list when revising (if feature_space is qa_agent)')
 
     # linear modeling
     parser.add_argument("--encoding_model", type=str,
@@ -260,7 +264,8 @@ def run_pipeline(args, r):
             args, r, stim_train_delayed, stim_test_delayed,
             story_names_train, story_names_test)
         if stim_train_delayed.shape[1] == 0:
-            raise ValueError(f'No features selected {stim_train_delayed.shape=}')
+            logging.error(f'No features exist after selection!!!! {stim_train_delayed.shape=} {stim_test_delayed.shape=}')
+            exit(0)
     if args.use_random_subset_features:
         r, stim_train_delayed, stim_test_delayed = feat_select.select_random_feature_subset(
             args, r, stim_train_delayed, stim_test_delayed)

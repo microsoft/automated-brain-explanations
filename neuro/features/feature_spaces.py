@@ -288,7 +288,10 @@ def get_llm_vectors(
                 args_cache = {'story': story, 'model': qa_embedding_model, 'question': q, 'qa_embedding_model': qa_embedding_model, 'story_gen': 'genstory' in story.lower()}
                 cache_hash = sha256(args_cache)
                 cache_file = join(
-                    config.CACHE_EMBS_AGENT_DIR, qa_embedding_model.replace('/', '_'), f'{cache_hash}.jl')
+                    config.CACHE_EMBS_AGENT_DIR,
+                    qa_embedding_model.replace('/', '_'),
+                    f'{cache_hash}.jl'
+                )
                 
                 if os.path.exists(cache_file) and use_cache:
                     logging.info(
