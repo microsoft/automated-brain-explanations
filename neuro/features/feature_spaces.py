@@ -294,7 +294,7 @@ def get_llm_vectors(
                     logging.info(
                         f'Loading cached {story_num}/{len(story_names)}: {story} Q{i}/{len(qa_questions_version)}: {q}')
                     try:
-                        qa_vecs[q] = joblib.load(cache_file)
+                        qa_vecs[q] = joblib.load(cache_file).astype(float)
                         loaded_from_cache = True
                     except:
                         print('Error loading', cache_file)
@@ -310,7 +310,7 @@ def get_llm_vectors(
                     embedding_model.questions = [q]
                     qa_vecs[q] = embedding_model(ngrams_list_dict[story], verbose=False)
                     os.makedirs(dirname(cache_file), exist_ok=True)
-                    joblib.dump(qa_vecs[q], cache_file)
+                    joblib.dump(qa_vecs[q].astype(bool), cache_file)
             
             # stack the vectors for all questions                    
             assert len(qa_vecs) == len(qa_questions_version), \
@@ -318,7 +318,7 @@ def get_llm_vectors(
             vectors[story] = np.hstack(
                 [qa_vecs[q] for q in qa_questions_version])
         else:
-            # non-qa agent: try loading from cache
+            # non-agent: try loading from cache
             loaded_from_cache = False
             if qa_embedding_model != 'gpt4':
                 args_cache = {'story': story, 'model': feature_space, 'ngram_size': num_ngrams_context,
@@ -381,6 +381,7 @@ def get_llm_vectors(
                 os.makedirs(dirname(cache_file), exist_ok=True)
                 joblib.dump(embs, cache_file)
 
+    # return
     if num_trs_context is not None:
         return vectors
     elif not downsample:
