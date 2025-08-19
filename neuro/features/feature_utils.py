@@ -84,7 +84,7 @@ def get_features_full(
     features_downsampled = np.hstack(features_downsampled_list)
 
     # subselect questions
-    if args.num_questions_restrict > 0 and feature_space == 'qa_embedder':
+    if args.num_questions_restrict > 0:
         features_downsampled = features_downsampled[:, :args.num_questions_restrict]
 
     # apply averaging over answers if relevant (and drop some questions)

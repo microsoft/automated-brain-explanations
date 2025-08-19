@@ -131,10 +131,10 @@ def add_main_args(parser):
                         help='If passed, only use this question index for QA features')
     parser.add_argument("--num_questions_restrict", type=int,
                         default=-1,
-                        help='''Restricts the number of questions to use (only when feature_space is qa_embedder).''')
+                        help='''Restricts the number of features to use (takes them in sorted order).''')
 
     # agent features
-    parser.add_argument("--agent_checkpoint", type=str, default='gpt-4o', choices=['gpt-4o', 'o4-mini', 'gpt-4.1', 'gpt-5-chat'],
+    parser.add_argument("--agent_checkpoint", type=str, default='gpt-4o', choices=['gpt-4o', 'o4-mini', 'gpt-4.1', 'gpt-5', 'gpt-5-chat'],
                         help='Checkpoint to use for agent (if feature_space is qa_agent)')
     parser.add_argument("--num_agent_epochs", type=int, default=5,
                         help='Number of epochs to train the agent for (if feature_space is qa_agent)')
@@ -259,6 +259,8 @@ def run_pipeline(args, r):
         r, stim_train_delayed, stim_test_delayed = feat_select.select_features(
             args, r, stim_train_delayed, stim_test_delayed,
             story_names_train, story_names_test)
+        if stim_train_delayed.shape[1] == 0:
+            raise ValueError(f'No features selected {stim_train_delayed.shape=}')
     if args.use_random_subset_features:
         r, stim_train_delayed, stim_test_delayed = feat_select.select_random_feature_subset(
             args, r, stim_train_delayed, stim_test_delayed)

@@ -61,7 +61,7 @@ Rewrite every element in this list to be a question starting with "Does the inpu
 
 Make as few changes as possible to the original text.
 Return only a python list and nothing else.""".strip()
-        questions_list_improper_revised_str = lm(PROMPT_REWORD, max_completion_tokens=None, temperature=0)
+        questions_list_improper_revised_str = lm(PROMPT_REWORD, max_completion_tokens=None, temperature=0, reasoning_effort='low')
         try:
             questions_list_improper_revised = _extract_python_list_from_str(questions_list_improper_revised_str)
         except Exception as e:
@@ -111,7 +111,7 @@ Each question should ask about one concept rather than joining together unrelate
 Each question must start with "Does the input" and end with "?".
 Example: ["Does the input mention a location?", "Does the input mention time?", "Does the input contain a proper noun?"]
 """.strip()
-    questions_list_str = lm(PROMPT, max_completion_tokens=None, temperature=0, seed=args.seed) #, max_completion_tokens=1000, temperature=0)
+    questions_list_str = lm(PROMPT, max_completion_tokens=None, temperature=0, seed=args.seed, reasoning_effort='high')
     questions_list = _extract_python_list_from_str(questions_list_str)
     # questions_list = revise_invalid_questions_by_removing(questions_list)
     questions_list = revise_invalid_questions_by_rewording(questions_list, lm)
@@ -178,7 +178,7 @@ Each question should ask about one concept rather than joining together unrelate
 Each question must start with "Does the input" and end with "?". It is very important that every question starts with "Does the input".
 Example output: ["Does the input mention a location?", "Does the input mention time?", "Does the input contain a proper noun?"]
 """.strip()
-    questions_list_str = lm(PROMPT, temperature=0, max_completion_tokens=None, seed=args.seed)
+    questions_list_str = lm(PROMPT, temperature=0, max_completion_tokens=None, seed=args.seed, reasoning_effort='high')
     questions_list = _extract_python_list_from_str(questions_list_str)
     logging.info(f"Updated questions list: {questions_list}")
     # assert all(q.startswith('Does the input') and q.endswith('?') for q in questions_list), \

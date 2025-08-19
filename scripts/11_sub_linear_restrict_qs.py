@@ -16,18 +16,20 @@ params_shared_dict = {
     'save_dir': ['/home/chansingh/mntv1/deep-fMRI/encoding/aug4_agentic'],
     'ndelays': [8],
 
-    'feature_space': ['qa_embedder'],
     'qa_embedding_model': ['meta-llama/Meta-Llama-3-8B-Instruct'], 
 }
 
 params_coupled_dict = {
-    ('qa_questions_version', 'num_questions_restrict'): 
+    ('feature_space', 'qa_questions_version', 'num_questions_restrict'): 
     [
-        (qa_questions_version, num_questions_restrict)
+        ('qa_embedder', qa_questions_version, num_questions_restrict)
         for qa_questions_version in ['v3', 'hypothesae']
         for num_questions_restrict in [10, 20, 30, 40, 50, 75, 100, 125, 150, 175, 200]
+    ] + 
+    [
+        ('eng1000', None, num_questions_restrict)
+        for num_questions_restrict in [10, 20, 30, 40, 50, 75, 100, 125, 150, 175, 200]
     ]
-
 }
 # Args list is a list of dictionaries
 # If you want to do something special to remove some of these runs, can remove them before calling run_args_list
@@ -51,6 +53,6 @@ submit_utils.run_args_list(
     n_cpus=8,
     # actually_run=False,
     repeat_failed_jobs=True,
-    shuffle=True,
+    # shuffle=True,
     cmd_python=f'export HF_TOKEN={open(expanduser("~/.HF_TOKEN"), "r").read().strip()}; python',
 )

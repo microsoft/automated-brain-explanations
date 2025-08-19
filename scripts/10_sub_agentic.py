@@ -31,7 +31,7 @@ params_shared_dict = {
     
     'num_agent_epochs': [20],
     # 'agent_checkpoint': ['o4-mini', 'gpt-4.1'],
-    'agent_checkpoint': ['o4-mini', 'gpt-4.1', 'gpt-5-chat'],
+    'agent_checkpoint': ['gpt-5'],
 }
 
 params_coupled_dict = {}
@@ -68,6 +68,5 @@ submit_utils.run_args_list(
     # gpu_ids=[[2, 3]],
     repeat_failed_jobs=True,
     shuffle=True,
-    # cmd_python=f'export HF_TOKEN={open(expanduser("~/.HF_TOKEN"), "r").read().strip()}; python',
     cmd_python=f'export HF_TOKEN={open(expanduser("~/.HF_TOKEN"), "r").read().strip()}; .venv/bin/python',
 )
