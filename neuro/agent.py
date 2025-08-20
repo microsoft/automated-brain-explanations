@@ -101,7 +101,7 @@ Extend and revise the original list of questions with several more questions tha
 Merge questions that seem too similar.
 Add new questions that capture potentially missing aspects.
 Do not needlessly reword existing questions.
-The output should be a python list of strings that contains roughly {args.num_questions_increment_target} more questions that the original list.
+The output should be a python list of strings that contains roughly {len(questions_list) + args.num_questions_increment_target} questions.
 The output list should exactly repeat many of the original questions.
 Return a python list of strings and nothing else.
 Each question should be concise.

@@ -30,16 +30,15 @@ params_shared_dict = {
 
     
     'agent_checkpoint': ['o4-mini', 'gpt-4.1', 'gpt-5'],
-    # 'num_agent_epochs': [25],
-    # 'num_questions_brainstorm_target': [25],
-    # 'num_questions_increment_target': [25],
-    
-    'num_agent_epochs': [40],
-    'num_questions_brainstorm_target': [10],
-    'num_questions_increment_target': [10],
 }
 
-params_coupled_dict = {}
+params_coupled_dict = {
+    ('num_questions_brainstorm_target', 'num_questions_increment_target', 'num_agent_epochs'): [
+        (25, 25, 25),
+        (10, 10, 40),
+        (50, 50, 20),
+    ],
+}
 
 # Args list is a list of dictionaries
 # If you want to do something special to remove some of these runs, can remove them before calling run_args_list
@@ -67,11 +66,11 @@ submit_utils.run_args_list(
     args_list,
     script_name=script_name,
     unique_seeds='seed_stories',
-    # amlt_kwargs=amlt_kwargs,
+    amlt_kwargs=amlt_kwargs,
     # n_cpus=8,
     # actually_run=False,
     gpu_ids=[0, 1, 2, 3],
     repeat_failed_jobs=True,
-    shuffle=True,
+    # shuffle=True,
     cmd_python=f'export HF_TOKEN={open(expanduser("~/.HF_TOKEN"), "r").read().strip()}; .venv/bin/python',
 )
