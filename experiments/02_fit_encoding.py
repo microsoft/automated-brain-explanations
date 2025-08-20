@@ -33,7 +33,6 @@ from neuro.features.questions.gpt4 import QS_HYPOTHESES_COMPUTED
 path_to_repo = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 path_to_file = os.path.dirname(os.path.abspath(__file__))
 
-
 def add_main_args(parser):
     """Caching uses the non-default values from argparse to name the saving directory.
     Changing the default arg an argument will break cache compatibility with previous runs.

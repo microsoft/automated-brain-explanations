@@ -14,9 +14,10 @@ environment:
     # - pip install .
     - curl -LsSf https://astral.sh/uv/install.sh | sh # install uv
     - source /home/aiscuser/.local/bin/env # add uv to path
-    - uv venv --python 3.12 --seed
-    - source .venv/bin/activate # activate uv virtual environment
-    - uv pip install -r requirements.txt
+    # - uv venv --python 3.12 --seed
+    - uv sync
+    # - source .venv/bin/activate # activate uv virtual environment
+    # - uv pip install -r requirements.txt
     - git clone https://github.com/csinva/imodelsX.git
     - cd imodelsX
     - uv pip install -e . # install imodelsX in editable mode

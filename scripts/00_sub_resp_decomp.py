@@ -35,5 +35,5 @@ submit_utils.run_args_list(
     n_cpus=3,
     repeat_failed_jobs=True,
     shuffle=True,
-    cmd_python=f'export HF_TOKEN={open(expanduser("~/.HF_TOKEN"), "r").read().strip()}; python',
+    cmd_python=f'export HF_TOKEN={open(expanduser("~/.HF_TOKEN"), "r").read().strip()}; uv run python',
 )
