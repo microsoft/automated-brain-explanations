@@ -8,21 +8,10 @@ environment:
   image: amlt-sing/pytorch
   # image: amlt-sing/acpt-rocm6.2_ubuntu22.04_py3.10_pytorch2.5.1
   setup:
-    # - pip install -r requirements.txt --user
-    # - git clone https://github.com/csinva/imodelsX.git
-    # - pip install imodelsX/
-    # - pip install .
     - curl -LsSf https://astral.sh/uv/install.sh | sh # install uv
     - source /home/aiscuser/.local/bin/env # add uv to path
-    # - uv venv --python 3.12 --seed
-    - uv sync
-    # - source .venv/bin/activate # activate uv virtual environment
-    # - uv pip install -r requirements.txt
-    - git clone https://github.com/csinva/imodelsX.git
-    - cd imodelsX
-    - uv pip install -e . # install imodelsX in editable mode
-    - cd ..
-    - uv pip install .
+    - uv add git+https://github.com/csinva/imodelsX # get imodelsX from github url
+    - uv sync # creates .venv with correct deps
 
 
 code:  

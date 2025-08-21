@@ -21,24 +21,21 @@ params_shared_dict = {
     # this dir contains results for non-full cortex
     'save_dir': ['/home/chansingh/mntv1/deep-fMRI/encoding/aug4_agentic'],
     'pc_components': [100],
-
-    # first run to perform and save feature selection #######################################
-    # run with a single subject, which will do feature selection across UTS01-UTS03 automatically when feature_selection_alpha > 0
-    'subject': ['shared'],
-    'predict_subset': ['all', 'prefrontal', 'occipital', 'sensorimotor', 'cingulate', 'insula', 'parietal', 'temporal'],
     'feature_selection_frac': [1],
     'feature_selection_max_iter': [100],
     'feature_selection_pc_components': [10],
     'seed': [0],
 
-    # second, we can use selected features to fit ridge by changing subject to something besides shared #######################################
-    # 'subject': ['UTS01', 'UTS02', 'UTS03'],
-    # 'ndelays': [8],
+    # first run to perform and save feature selection #######################################
+    # run with a single subject, which will do feature selection across UTS01-UTS03 automatically when feature_selection_alpha > 0
+    # 'subject': ['shared'],
     # 'predict_subset': ['all', 'prefrontal', 'occipital', 'sensorimotor', 'cingulate', 'insula', 'parietal', 'temporal'],
-    # 'feature_selection_frac': [1],
-    # 'feature_selection_max_iter': [100],
-    # 'feature_selection_pc_components': [10],
-    # 'seed': [0],
+
+    # second, we can use selected features to fit ridge by changing subject to something besides shared #######################################
+    'subject': ['UTS01', 'UTS02', 'UTS03'],
+    'ndelays': [8],
+    'predict_subset': ['all', 'prefrontal', 'occipital', 'sensorimotor', 'cingulate', 'insula', 'parietal', 'temporal'],
+    
 }
 
 params_coupled_dict = {
@@ -79,12 +76,12 @@ amlt_kwargs = {
 submit_utils.run_args_list(
     args_list,
     script_name=script_name,
-    amlt_kwargs=amlt_kwargs,
+    # amlt_kwargs=amlt_kwargs,
     # n_cpus=8,
     # n_cpus=1,
     # gpu_ids=[0, 1, 2, 3],
     # actually_run=False,
     repeat_failed_jobs=True,
     # shuffle=True,
-    cmd_python=f'export HF_TOKEN={open(expanduser("~/.HF_TOKEN"), "r").read().strip()}; uv run python',
+    cmd_python=f'export HF_TOKEN={open(expanduser("~/.HF_TOKEN"), "r").read().strip()}; .venv/bin/python',
 )

@@ -81,5 +81,5 @@ submit_utils.run_args_list(
     # actually_run=False,
     # repeat_failed_jobs=True,
     shuffle=False,
-    cmd_python=f'export HF_TOKEN={open(expanduser("~/.HF_TOKEN"), "r").read().strip()}; uv run python',
+    cmd_python=f'export HF_TOKEN={open(expanduser("~/.HF_TOKEN"), "r").read().strip()}; .venv/bin/python',
 )

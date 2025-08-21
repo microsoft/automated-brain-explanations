@@ -22,3 +22,4 @@ data/**.txt
 scripts/**.py
 docs
 data/demo_data
+.venv

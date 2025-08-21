@@ -63,14 +63,14 @@ amlt_kwargs = {
 }
 
 submit_utils.run_args_list(
-    args_list,
+    args_list[::-1],
     script_name=script_name,
     unique_seeds='seed_stories',
-    amlt_kwargs=amlt_kwargs,
+    # amlt_kwargs=amlt_kwargs,
     # n_cpus=8,
     # actually_run=False,
     gpu_ids=[0, 1, 2, 3],
     repeat_failed_jobs=True,
     # shuffle=True,
-    cmd_python=f'export HF_TOKEN={open(expanduser("~/.HF_TOKEN"), "r").read().strip()}; uv run python',
+    cmd_python=f'export HF_TOKEN={open(expanduser("~/.HF_TOKEN"), "r").read().strip()}; .venv/bin/python',
 )

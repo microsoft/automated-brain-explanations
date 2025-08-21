@@ -84,7 +84,7 @@ Other studies that build off the codebase here: [Shimizu et al. 2025](https://ar
 - to make flatmaps, need to set [pycortex filestore](https://gallantlab.org/pycortex/auto_examples/quickstart/show_config.html) to `{root_dir}/ds003020/derivative/pycortex-db/`
 
 **Code**
-- `pip install -e .` from the repo directory to locally install the `neuro` package
+- Install using [uv](https://docs.astral.sh/uv/). Clone the repo, `cd` into the repo, run `uv add git+https://github.com/csinva/imodelsX`, then run `uv sync`. This will locally install the `neuro` package
 - set `neuro.config.root_dir/data` to where you put all the data
   - loading responses
     - `neuro.data.response_utils` function `load_response`
