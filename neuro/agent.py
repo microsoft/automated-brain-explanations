@@ -43,6 +43,7 @@ Each question must start with "Does the input" and end with "?".
 Example: ["Does the input mention a location?", "Does the input mention time?", "Does the input contain a proper noun?"]
 """.strip()
     questions_list_str = lm(PROMPT, max_completion_tokens=None, temperature=0, seed=args.seed, reasoning_effort='high')
+    questions_list_str = remove_invalid_chars_from_string(questions_list_str)
     questions_list = _extract_python_list_from_str(questions_list_str)
     # questions_list = revise_invalid_questions_by_removing(questions_list)
     questions_list = revise_invalid_questions_by_rewording(questions_list, lm)
@@ -70,8 +71,6 @@ def update_questions(lm, args, questions_list: List[str], r) -> List[str]:
             topk_questions_with_imp.append((questions_list[i], questions_list[j], feature_correlation_matrix[i, j]))
 
     top_error_ngrams = r['error_ngrams_df']['ngram'].values[:args.topk_agent_errors]
-
-
 
     PROMPT = f"""
 # Main instructions
@@ -111,6 +110,7 @@ Each question must start with "Does the input" and end with "?". It is very impo
 Example output: ["Does the input mention a location?", "Does the input mention time?", "Does the input contain a proper noun?"]
 """.strip()
     questions_list_str = lm(PROMPT, temperature=0, max_completion_tokens=None, seed=args.seed, reasoning_effort='high')
+    questions_list_str = remove_invalid_chars_from_string(questions_list_str)
     questions_list = _extract_python_list_from_str(questions_list_str)
     logging.info(f"Updated questions list: {questions_list}")
     # assert all(q.startswith('Does the input') and q.endswith('?') for q in questions_list), \
@@ -190,3 +190,42 @@ def revise_invalid_questions_by_removing(questions_list: List[str]) -> List[str]
             if not (q.startswith('Does the input') and q.endswith('?')):
                 logging.info(f"\tRemoved question: {q}")
     return questions_list_revised
+
+invalid_char_map = {
+    # Quotes
+    "“": '"',
+    "”": '"',
+    "‘": "'",
+    "’": "'",
+    "‚": "'",
+    "‛": "'",
+
+    # Dashes
+    "–": "-",   # en dash
+    "—": "-",   # em dash
+    "−": "-",   # minus sign
+
+    # Ellipsis
+    "…": "...",
+
+    # Spaces
+    "\u00A0": " ",  # non-breaking space
+    "\u200B": "",   # zero-width space
+    "\u200C": "",   # zero-width non-joiner
+    "\u200D": "",   # zero-width joiner
+    "\u202F": " ",  # narrow no-break space
+    "\uFEFF": "",   # zero-width no-break space (BOM)
+
+    # Misc punctuation
+    "•": "-",   # bullet
+    "·": "-",   # middle dot
+    "«": '"',
+    "»": '"',
+    "‹": "'",
+    "›": "'",
+}
+
+def remove_invalid_chars_from_string(text, mapping=invalid_char_map):
+    for bad, good in mapping.items():
+        text = text.replace(bad, good)
+    return text
