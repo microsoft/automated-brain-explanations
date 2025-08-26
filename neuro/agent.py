@@ -30,7 +30,7 @@ def retry(max_attempts=3, delay=1, exceptions=(Exception,)):
 
 def brainstorm_init_questions(lm, args) -> List[str]:
     PROMPT = f"""
-You are a scientific agent tasked with generating useful questions for linearly predicting fMRI responses to natural language stimuli.
+You are a scientific agent tasked with generating useful questions for linearly predicting fMRI responses to natural language sentences.
 {f'Specifically, you are predicting fMRI responses to the {args.predict_subset} cortex.' if not args.predict_subset == 'all' else ''}
 
 Brainstorm some questions that could be useful.
@@ -40,6 +40,7 @@ Each question should be concise.
 Each question should not contain many examples.
 Each question should ask about one concept rather than joining together unrelated concepts.
 Each question must start with "Does the input" and end with "?".
+The input to each question will be a single sentence from a narrative story.
 Example: ["Does the input mention a location?", "Does the input mention time?", "Does the input contain a proper noun?"]
 """.strip()
     questions_list_str = lm(PROMPT, max_completion_tokens=None, temperature=0, seed=args.seed, reasoning_effort='high')
@@ -74,7 +75,7 @@ def update_questions(lm, args, questions_list: List[str], r) -> List[str]:
 
     PROMPT = f"""
 # Main instructions
-You are a scientific agent tasked with generating useful questions for linearly predicting fMRI responses to natural language stimuli.
+You are a scientific agent tasked with generating useful questions for linearly predicting fMRI responses to natural language sentences.
 {f'Specifically, you are predicting fMRI responses to the {args.predict_subset} cortex.' if not args.predict_subset == 'all' else ''}
 
 Here is the original list of questions that have been previously tested, along with their feature importance (higher is more important):
@@ -107,6 +108,7 @@ Each question should be concise.
 Each question should not contain many examples.
 Each question should ask about one concept rather than joining together unrelated concepts.
 Each question must start with "Does the input" and end with "?". It is very important that every question starts with "Does the input".
+The input to each question will be a single sentence from a narrative story.
 Example output: ["Does the input mention a location?", "Does the input mention time?", "Does the input contain a proper noun?"]
 """.strip()
     questions_list_str = lm(PROMPT, temperature=0, max_completion_tokens=None, seed=args.seed, reasoning_effort='high')

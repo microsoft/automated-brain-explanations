@@ -20,7 +20,7 @@ params_shared_dict = {
     # 'subject': ['UTS02'],
     'seed': [1],
     'subject': [f'UTS0{k}' for k in range(1, 4)],
-    'save_dir': ['/home/chansingh/mntv1/deep-fMRI/encoding/aug19_agentic'],
+    'save_dir': ['/home/chansingh/mntv1/deep-fMRI/encoding/aug26_agentic'],
     # 'predict_subset': ['prefrontal', 'occipital', 'sensorimotor', 'cingulate', 'insula', 'parietal', 'temporal'],
     'predict_subset': ['all'], #, 'prefrontal'],
 
@@ -63,13 +63,13 @@ amlt_kwargs = {
 }
 
 submit_utils.run_args_list(
-    args_list[::-1],
+    args_list,
     script_name=script_name,
     unique_seeds='seed_stories',
-    # amlt_kwargs=amlt_kwargs,
+    amlt_kwargs=amlt_kwargs,
     # n_cpus=8,
     # actually_run=False,
-    gpu_ids=[0, 1, 2, 3],
+    # gpu_ids=[0, 1, 2, 3],
     repeat_failed_jobs=True,
     # shuffle=True,
     cmd_python=f'export HF_TOKEN={open(expanduser("~/.HF_TOKEN"), "r").read().strip()}; .venv/bin/python',
