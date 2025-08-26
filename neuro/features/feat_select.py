@@ -21,9 +21,9 @@ def get_alphas(feature_space: str):
 
 def get_alphas_agentic(feature_space: str):
     if feature_space == 'qa_embedder':
-        return sorted(np.logspace(0, -3, 20).tolist() + [0.40] + [0.28] + [5e-1] + [1e-1], reverse=True)[: 13]
+        return sorted(np.logspace(0, -3, 20).tolist() + [0.40] + [0.28] + [5e-1] + [1e-1], reverse=True)
     elif feature_space == 'eng1000':
-        return sorted(np.logspace(0, -3, 20).tolist() + [0.19], reverse=True)[: 12]
+        return sorted(np.logspace(0, -3, 20).tolist() + [0.19], reverse=True)
     else:
         return sorted(np.logspace(0, -3, 20).tolist(), reverse=True)
 

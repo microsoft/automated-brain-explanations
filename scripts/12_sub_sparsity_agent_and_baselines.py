@@ -28,13 +28,13 @@ params_shared_dict = {
 
     # first run to perform and save feature selection #######################################
     # run with a single subject, which will do feature selection across UTS01-UTS03 automatically when feature_selection_alpha > 0
-    # 'subject': ['shared'],
-    # 'predict_subset': ['all', 'prefrontal', 'occipital', 'sensorimotor', 'cingulate', 'insula', 'parietal', 'temporal'],
+    'subject': ['shared'],
+    'predict_subset': ['all', 'prefrontal', 'occipital', 'sensorimotor', 'cingulate', 'insula', 'parietal', 'temporal'],
 
     # second, we can use selected features to fit ridge by changing subject to something besides shared #######################################
-    'subject': ['UTS01', 'UTS02', 'UTS03'],
-    'ndelays': [8],
-    'predict_subset': ['all', 'prefrontal', 'occipital', 'sensorimotor', 'cingulate', 'insula', 'parietal', 'temporal'],
+    # 'subject': ['UTS01', 'UTS02', 'UTS03'],
+    # 'ndelays': [8],
+    # 'predict_subset': ['all', 'prefrontal', 'occipital', 'sensorimotor', 'cingulate', 'insula', 'parietal', 'temporal'],
     
 }
 
@@ -48,14 +48,14 @@ params_coupled_dict = {
     +
     [
         ('eng1000', None, None, alpha)
-        for alpha in get_alphas_agentic('eng1000')
+        for alpha in get_alphas_agentic('eng1000')[4:-6]
     ]
     +
     [
         # agent setting uses just llama instead of ensemble and v3 instead of v3_boostexamples_merged
         ('qa_embedder', 'v3', 'meta-llama/Meta-Llama-3-8B-Instruct', alpha)
         # note, would run all of them when not picking subset
-        for alpha in get_alphas_agentic('qa_embedder')[1:-3]
+        for alpha in get_alphas_agentic('qa_embedder')[3:-6]
     ],
 }
 # Args list is a list of dictionaries
@@ -76,7 +76,7 @@ amlt_kwargs = {
 submit_utils.run_args_list(
     args_list,
     script_name=script_name,
-    # amlt_kwargs=amlt_kwargs,
+    amlt_kwargs=amlt_kwargs,
     # n_cpus=8,
     # n_cpus=1,
     # gpu_ids=[0, 1, 2, 3],

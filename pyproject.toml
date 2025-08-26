@@ -40,6 +40,7 @@ dependencies = [
     "ridge-utils",
     "pycortex",
     "imodelsx",
+    "amlt>=10.16.5",
 ]
 
 [project.optional-dependencies]
@@ -47,10 +48,17 @@ dev = [
     "pytest",
     "seaborn",
     "dvu",
+    "jupyter",
+    "ipython",
 ]
 
 [tool.uv.sources]
 imodelsx = { path = "../imodelsX", editable = true }
+amlt = { index = "msr" }
+
+[[tool.uv.index]]
+name = "msr"
+url = "https://msrpypi.azurewebsites.net/stable/leloojoo"
 
 
 [tool.setuptools.packages.find]
