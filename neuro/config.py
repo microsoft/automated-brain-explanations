@@ -32,8 +32,7 @@ RESP_PROCESSING_DIR = join(FMRI_DIR_BLOB, 'qa', 'resp_processing_full')
 GEMV_RESPS_DIR = join(FMRI_DIR_BLOB, 'brain_tune', 'story_data')
 CACHE_OPENAI_AGENT_DIR = join(FMRI_DIR_BLOB, 'qa', 'cache_openai_agent')
 
-# eng1000 data, download from [here](https://github.com/HuthLab/deep-fMRI-dataset)
-EM_DATA_DIR = join(FMRI_DIR_BLOB, 'data', 'eng1000')
+EM_DATA_DIR = join(REPO_DIR, 'data', 'em_data')
 NLP_UTILS_DIR = join(FMRI_DIR_BLOB, 'nlp_utils')
 
 DECODING_DIR = join(REPO_DIR, 'data', 'decoding')

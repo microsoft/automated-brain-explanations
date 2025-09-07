@@ -5,11 +5,11 @@
   <img src="https://img.shields.io/badge/numpy->=2.0-blue">
 </p>  
 
-**How does the brain process language?** We've been studying this question using large-scale brain-imaging datasets collected from human subjects as they read and listen to stories.
-Along the way, we've used LLMs to help us predict and explain patterns in this data and found a bunch of cool things!
+**How does the brain process language?** We've been studying how to scalably answer this question using *LLMs* and *large-scale brain-imaging datasets*.
 This repo contains code for doing these analyses & applying the tools we've developed to various domains.
 
 -----
+### Papers
 **This repo contains code underlying 2 neuroscience studies:**
 
 <details>
@@ -69,19 +69,17 @@ explanation_dict = explain_module_sasc(
 </details>
 <br>
 
-Other studies that build off the codebase here: [Shimizu et al. 2025](https://arxiv.org/abs/2507.16080), [Kim et al. 2024](https://arxiv.org/abs/2411.00066), [Zhuang et al. 2025](https://arxiv.org/abs/2410.05629)
-
 ### Setting up
 
 **Dataset**
-- The `data/decoding` folder contains a quickstart easy example for TR-level decoding
-  - it has everything needed, but if you want to visualize the results on a flatmap, you need to download the relevant PCs from [here](https://utexas.box.com/s/7ur0fsr52nephxp96hs5dxm99rk2v1u0)
 - to quickstart, just download the responses / wordsequences for 3 subjects from the [encoding scaling laws paper](https://utexas.app.box.com/v/EncodingModelScalingLaws/folder/230420528915)
   - this is all the data you need if you only want to analyze 3 subjects and don't want to make flatmaps
-- to run Eng1000, need to grab `em_data` directory from [here](https://github.com/HuthLab/deep-fMRI-dataset) and move its contents to `{root_dir}/em_data`
+- to run eng1000, need to grab `em_data` directory from [here](https://github.com/HuthLab/deep-fMRI-dataset) and move its contents to `{root_dir}/em_data`
 - for more, download data with `python experiments/00_load_dataset.py`
     - create a `data` dir under wherever you run it and will use [datalad](https://github.com/datalad/datalad) to download the preprocessed data as well as feature spaces needed for fitting [semantic encoding models](https://www.nature.com/articles/nature17637)
 - to make flatmaps, need to set [pycortex filestore](https://gallantlab.org/pycortex/auto_examples/quickstart/show_config.html) to `{root_dir}/ds003020/derivative/pycortex-db/`
+- The `data/decoding` folder contains a quickstart easy example for TR-level decoding
+  - it has everything needed, but if you want to visualize the results on a flatmap, you need to download the relevant PCs from [here](https://utexas.box.com/s/7ur0fsr52nephxp96hs5dxm99rk2v1u0)
 
 **Code**
 - Install using [uv](https://docs.astral.sh/uv/). Clone the repo, `cd` into the repo, run `uv add git+https://github.com/csinva/imodelsX`, then run `uv sync`. This will locally install the `neuro` package
@@ -99,5 +97,7 @@ Other studies that build off the codebase here: [Shimizu et al. 2025](https://ar
     - This script takes many relevant arguments through argparse
 
 ### Reference
+- Other studies that build off the codebase here: Explaining speech encoding models ([Shimizu et al. 2025](https://arxiv.org/abs/2507.16080)), Induction-Gram ([Kim et al. 2024](https://arxiv.org/abs/2411.00066)), Vector in-context learning ([Zhuang et al. 2025](https://arxiv.org/abs/2410.05629))
+- big thanks to folks that released open-source brain-imaging datasets, especially the [HuthLab fMRI passive listening dataset](https://openneuro.org/datasets/ds003020/versions/3.1.0) and the [Podcast ECoG dataset](https://www.nature.com/articles/s41597-025-05462-2)
 - see related [fMRI experiments](https://github.com/csinva/fmri)
 - built from [this template](https://github.com/csinva/cookiecutter-ml-research)
