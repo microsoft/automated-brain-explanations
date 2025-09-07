@@ -35,6 +35,10 @@ CACHE_EMBS_DIR = join(FMRI_DIR_BLOB, 'qa', 'cache_embs')
 CACHE_EMBS_AGENT_DIR = join(FMRI_DIR_BLOB, 'qa', 'cache_embs_agent')
 RESP_PROCESSING_DIR = join(FMRI_DIR_BLOB, 'qa', 'resp_processing_full')
 NEUROSYNTH_DATA_DIR = join(FMRI_DIR_BLOB, 'qa', 'neurosynth_data')
+# copy over the best results from the repo_dir
+# !rclone copy box:DeepTune/QA/cached_results/results_best_ensemble.pkl results/
+# !rclone copy box:DeepTune/QA/cached_results/results_full_oct17.pkl results/
+
 
 # agent stuff
 HYPOTHESAES_RESULTS_DIR = join(FMRI_DIR_BLOB, 'qa', 'hypothesaes')

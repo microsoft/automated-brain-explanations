@@ -1,5 +1,9 @@
 <h3 align="center">🧠 How does the brain process language?</h3>
-
+<p align="center">
+  <img src="https://img.shields.io/badge/license-MIT-blue.svg">
+  <img src="https://img.shields.io/badge/python-3.9--3.11-blue">
+  <img src="https://img.shields.io/badge/numpy-%3E=2.0-blue">
+</p>
 <p align="center">
   We’ve been studying how to <i>scalably</i> answer this question using 
   <b>LLMs</b> and <b>large-scale brain-imaging datasets</b>.
@@ -8,18 +12,12 @@
   This repo contains code for running these analyses.
 </p>
 
-<p align="center">
-  <img src="https://img.shields.io/badge/license-MIT-blue.svg">
-  <img src="https://img.shields.io/badge/python-3.9--3.11-blue">
-  <img src="https://img.shields.io/badge/numpy-%3E=2.0-blue">
-</p>
+<img align="center" style="width: 100%; max-width:100%;" src="https://raw.githubusercontent.com/microsoft/automated-brain-explanations/main/docs/qa_map.svg">
+
 
 -----
 
 ### Papers
-
-<img align="center" width=90% src="https://microsoft.github.io/automated-brain-explanations/qa_map.svg?sanitize=True&kill_cache=1"> </img>	 <br/>
-
 
 **This repo contains code underlying 2 neuroscience studies:**
 
@@ -85,9 +83,8 @@ explanation_dict = explain_module_sasc(
 **Dataset**
 - to quickstart, just download the responses / wordsequences for 3 subjects from the [encoding scaling laws paper](https://utexas.app.box.com/v/EncodingModelScalingLaws/folder/230420528915)
   - this is all the data you need if you only want to analyze 3 subjects and don't want to make flatmaps
-- to run eng1000, need to grab `em_data` directory from [here](https://github.com/HuthLab/deep-fMRI-dataset) and move its contents to `{root_dir}/em_data`
-- for more, download data with `python experiments/00_load_dataset.py`
-    - create a `data` dir under wherever you run it and will use [datalad](https://github.com/datalad/datalad) to download the preprocessed data as well as feature spaces needed for fitting [semantic encoding models](https://www.nature.com/articles/nature17637)
+- to run full experiments, go through the paths in `neuro/config.py` and download data to the appropriate locations from [this box folder](https://utexas.box.com/s/7ur0fsr52nephxp96hs5dxm99rk2v1u0)
+  - to download the main dataset here (the [HuthLab fMRI passive listening dataset](https://openneuro.org/datasets/ds003020/versions/3.1.0)), run `python experiments/00_load_dataset.py` (will download the data using [datalad](https://github.com/datalad/datalad))
 - to make flatmaps, need to set [pycortex filestore](https://gallantlab.org/pycortex/auto_examples/quickstart/show_config.html) to `{root_dir}/ds003020/derivative/pycortex-db/`
 - the `data/decoding` folder contains a quickstart easy example for TR-level decoding
   - it has everything needed, but if you want to visualize the results on a flatmap, you need to download the relevant PCs from [here](https://utexas.box.com/s/7ur0fsr52nephxp96hs5dxm99rk2v1u0)
@@ -105,7 +102,7 @@ explanation_dict = explain_module_sasc(
 
 **Demo**
 - `python experiments/02_fit_encoding.py`
-    - This script takes many relevant arguments through argparse
+    - running this script with no args runs a simple small run. This script takes many relevant arguments through argparse to run different experiments
 
 ### Reference
 - Other studies that build off the codebase here: Explaining speech encoding models ([Shimizu et al. 2025](https://arxiv.org/abs/2507.16080)), Induction-Gram ([Kim et al. 2024](https://arxiv.org/abs/2411.00066)), Vector in-context learning ([Zhuang et al. 2025](https://arxiv.org/abs/2410.05629))
