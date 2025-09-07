@@ -3,6 +3,7 @@ from os.path import dirname
 
 import joblib
 import numpy as np
+import json
 from os.path import join
 import neuro.config
 from neuro.features.questions.gpt4 import QS_35_STABLE, QS_HYPOTHESES
@@ -221,15 +222,18 @@ if __name__ == "__main__":
 
     # # write all questions to a json file
     # with open(join(path_to_file, 'questions/all_questions.json'), 'w') as f:
-    #     json.dump(get_questions('all'), f, indent=4)
+        # json.dump(get_questions('all'), f, indent=4)
     # with open(join(path_to_file, 'questions/base_questions.json'), 'w') as f:
     #     json.dump(get_questions('base'), f, indent=4)
     # with open(join(path_to_file, 'questions/v3_boostexamples.json'), 'w') as f:
     #     json.dump(get_questions('v3_boostexamples', full=True), f, indent=4)
+    with open(join(path_to_file, 'questions/qs_35_stable.json'), 'w') as f:
+        json.dump(QS_35_STABLE, f, indent=4)
+    
 
     # for q in get_questions('v4_boostexamples'):
     # print(q)
 
-    print(get_kwargs_list_for_version_str('v3_boostexamples_merged'))
-    idxs_to_keep = _get_merged_keep_indices_v3_boostexamples()
-    print(idxs_to_keep.size)
+    # print(get_kwargs_list_for_version_str('v3_boostexamples_merged'))
+    # idxs_to_keep = _get_merged_keep_indices_v3_boostexamples()
+    # # print(idxs_to_keep.size)

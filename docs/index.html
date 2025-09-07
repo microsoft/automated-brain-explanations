@@ -5,8 +5,6 @@
     <!--js-->
     <script src="js/jquery-3.6.1.min.js"></script>
     <script src="js/jquery-ui.min.js"></script>
-    <script src="titles.js"></script>
-    <script src="authors.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/markdown-it.min.js"></script>
 
@@ -16,38 +14,22 @@
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/custom.css">
 
-
-
     <script>
-        function searchTitle() {
-            document.getElementById("quoteDisplay").innerHTML = titles[document.getElementById('searchbox').value];
-        }
+        const md = window.markdownit({
+            html: true,      // allow HTML inside Markdown
+            linkify: true,   // autolink URLs
+            breaks: false
 
-        $(function () {
-            $("#searchbox").autocomplete({
-                source: authors,
-                minLength: 4,
-                close: function (event, ui) { searchTitle(); }
-            });
         });
 
-        $('#searchbox').on('autocompleteselect', function (e, ui) {
-            searchTitle();
-        });
-
-
-
-        const md = window.markdownit();
-
-
-        // fetch('../readme.md')
-        fetch('https://raw.githubusercontent.com/microsoft/automated-brain-explanations/refs/heads/main/readme.md')
+        fetch('https://raw.githubusercontent.com/microsoft/automated-brain-explanations/main/readme.md')
             .then((response) => response.text())
             .then((text) => {
                 document.getElementById('readme').innerHTML = md.render(text);
             })
 
     </script>
+
 </head>
 
 <body class="wrapper" style="font-size:large">
