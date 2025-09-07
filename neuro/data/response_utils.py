@@ -45,10 +45,10 @@ def load_response_huge(stories, subject):
 
 
 def load_response_brain_drive(stories):
-    df = joblib.load(join(config.GEMV_RESPS_DIR, 'metadata.pkl'))
+    df = joblib.load(join(config.GCT_RESPS_DIR, 'metadata.pkl'))
     df_filt = df.loc[stories]
     resps = []
-    file_paths = (config.GEMV_RESPS_DIR + '/' +
+    file_paths = (config.GCT_RESPS_DIR + '/' +
                   df_filt['session'] + '/' + df_filt['resp_file']).to_list()
     for file_path in file_paths:
         resp = np.load(file_path)

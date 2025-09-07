@@ -1,15 +1,26 @@
-<h1 align="center">   🧠 Automated brain explanations 🧠</h1>
-<p align="center">
-<img src="https://img.shields.io/badge/license-mit-blue.svg">
-  <img src="https://img.shields.io/badge/python-3.9--3.11-blue">
-  <img src="https://img.shields.io/badge/numpy->=2.0-blue">
-</p>  
+<h3 align="center">🧠 How does the brain process language?</h3>
 
-**How does the brain process language?** We've been studying how to scalably answer this question using *LLMs* and *large-scale brain-imaging datasets*.
-This repo contains code for doing these analyses & applying the tools we've developed to various domains.
+<p align="center">
+  We’ve been studying how to <i>scalably</i> answer this question using 
+  <b>LLMs</b> and <b>large-scale brain-imaging datasets</b>.
+  Together, these let us automatically generate and test scientific hypotheses about language processing in the brain, 
+  potentially enabling a new paradigm for scientific research.
+  This repo contains code for running these analyses.
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/license-MIT-blue.svg">
+  <img src="https://img.shields.io/badge/python-3.9--3.11-blue">
+  <img src="https://img.shields.io/badge/numpy-%3E=2.0-blue">
+</p>
 
 -----
+
 ### Papers
+
+<img align="center" width=90% src="https://microsoft.github.io/automated-brain-explanations/qa_map.svg?sanitize=True&kill_cache=1"> </img>	 <br/>
+
+
 **This repo contains code underlying 2 neuroscience studies:**
 
 <details>
@@ -78,7 +89,7 @@ explanation_dict = explain_module_sasc(
 - for more, download data with `python experiments/00_load_dataset.py`
     - create a `data` dir under wherever you run it and will use [datalad](https://github.com/datalad/datalad) to download the preprocessed data as well as feature spaces needed for fitting [semantic encoding models](https://www.nature.com/articles/nature17637)
 - to make flatmaps, need to set [pycortex filestore](https://gallantlab.org/pycortex/auto_examples/quickstart/show_config.html) to `{root_dir}/ds003020/derivative/pycortex-db/`
-- The `data/decoding` folder contains a quickstart easy example for TR-level decoding
+- the `data/decoding` folder contains a quickstart easy example for TR-level decoding
   - it has everything needed, but if you want to visualize the results on a flatmap, you need to download the relevant PCs from [here](https://utexas.box.com/s/7ur0fsr52nephxp96hs5dxm99rk2v1u0)
 
 **Code**

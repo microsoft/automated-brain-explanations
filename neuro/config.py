@@ -2,43 +2,43 @@ import os.path
 from os.path import abspath, dirname, expanduser, join
 
 path_to_file = os.path.dirname(abspath(__file__))
+
+# local stuff that comes with the repo
 REPO_DIR = dirname(path_to_file)
+EM_DATA_DIR = join(REPO_DIR, 'data', 'em_data')
+DECODING_DIR = join(REPO_DIR, 'data', 'decoding')
+RESULTS_DIR_LOCAL = join(REPO_DIR, 'results')
+STORIES_DIR_GCT = join(RESULTS_DIR_LOCAL, "gct_stories")
+
 if 'chansingh' in expanduser('~'):
     MNT_DIR = '/home/chansingh/mntv1'
 else:
     MNT_DIR = '/mntv1'
 
 FMRI_DIR_BLOB = join(MNT_DIR, 'deep-fMRI')
-RESULTS_DIR_LOCAL = join(REPO_DIR, 'results')
-NEUROSYNTH_DATA_DIR = join(FMRI_DIR_BLOB, 'qa', 'neurosynth_data')
 
 # save fitted model
 BEST_RESULTS_DIR_ENSEMBLE = join(FMRI_DIR_BLOB, 'encoding', 'may7')
 SPARSE_FEATS_DIR = join(FMRI_DIR_BLOB, 'qa', 'sparse_feats_shared')
 
-STORIES_DIR_GCT = join(RESULTS_DIR_LOCAL, "stories")
-SAVE_DIR_FMRI = join(FMRI_DIR_BLOB, 'sasc', 'rj_models')
-CACHE_DIR = join(FMRI_DIR_BLOB, 'sasc', 'mprompt', 'cache')
-PILOT_STORY_DATA_DIR = join(FMRI_DIR_BLOB, 'brain_tune/story_data')
+# gct stuff
+PROCESSED_DIR = join(FMRI_DIR_BLOB, 'qa', 'gct_processed')
+GCT_RESPS_DIR = join(FMRI_DIR_BLOB, 'brain_tune', 'story_data')
 
-CACHE_NGRAMS_DIR = join(FMRI_DIR_BLOB, 'sasc/mprompt/cache/cache_ngrams')
+# general stuff
+SAVE_DIR_FMRI = join(FMRI_DIR_BLOB, 'sasc', 'rj_models')
+PILOT_STORY_DATA_DIR = join(FMRI_DIR_BLOB, 'brain_tune/story_data')
 REGION_IDXS_DIR = join(FMRI_DIR_BLOB, 'sasc/brain_regions')
 
-
-PROCESSED_DIR = join(FMRI_DIR_BLOB, 'qa', 'processed')
+# qa stuff
 CACHE_EMBS_DIR = join(FMRI_DIR_BLOB, 'qa', 'cache_embs')
 CACHE_EMBS_AGENT_DIR = join(FMRI_DIR_BLOB, 'qa', 'cache_embs_agent')
 RESP_PROCESSING_DIR = join(FMRI_DIR_BLOB, 'qa', 'resp_processing_full')
-GEMV_RESPS_DIR = join(FMRI_DIR_BLOB, 'brain_tune', 'story_data')
-CACHE_OPENAI_AGENT_DIR = join(FMRI_DIR_BLOB, 'qa', 'cache_openai_agent')
-
-EM_DATA_DIR = join(REPO_DIR, 'data', 'em_data')
-NLP_UTILS_DIR = join(FMRI_DIR_BLOB, 'nlp_utils')
-
-DECODING_DIR = join(REPO_DIR, 'data', 'decoding')
+NEUROSYNTH_DATA_DIR = join(FMRI_DIR_BLOB, 'qa', 'neurosynth_data')
 
 # agent stuff
 HYPOTHESAES_RESULTS_DIR = join(FMRI_DIR_BLOB, 'qa', 'hypothesaes')
+CACHE_OPENAI_AGENT_DIR = join(FMRI_DIR_BLOB, 'qa', 'cache_openai_agent')
 
 
 ############## ECOG ###################
