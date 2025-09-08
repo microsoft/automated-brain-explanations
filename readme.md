@@ -81,31 +81,31 @@ explanation_dict = explain_module_sasc(
 ### Setting up
 
 **Dataset**
-- to quickstart, just download the responses / wordsequences for 3 subjects from the [encoding scaling laws paper](https://utexas.app.box.com/v/EncodingModelScalingLaws/folder/230420528915)
-  - this is all the data you need if you only want to analyze 3 subjects and don't want to make flatmaps
-- to run full experiments, go through the paths in `neuro/config.py` and download data to the appropriate locations from [this box folder](https://utexas.box.com/s/7ur0fsr52nephxp96hs5dxm99rk2v1u0)
-  - to download the main dataset here (the [HuthLab fMRI passive listening dataset](https://openneuro.org/datasets/ds003020/versions/3.1.0)), run `python experiments/00_load_dataset.py` (will download the data using [datalad](https://github.com/datalad/datalad))
-- to make flatmaps, need to set [pycortex filestore](https://gallantlab.org/pycortex/auto_examples/quickstart/show_config.html) to `{root_dir}/ds003020/derivative/pycortex-db/`
-- the `data/decoding` folder contains a quickstart easy example for TR-level decoding
-  - it has everything needed, but if you want to visualize the results on a flatmap, you need to download the relevant PCs from [here](https://utexas.box.com/s/7ur0fsr52nephxp96hs5dxm99rk2v1u0)
+- To quickstart, just download the responses / wordsequences for 3 subjects from the [encoding scaling laws paper](https://utexas.app.box.com/v/EncodingModelScalingLaws/folder/230420528915)
+  - This is all the data you need if you only want to analyze 3 subjects and don't want to make flatmaps
+- To run full experiments, go through the paths in `neuro/config.py` and download data to the appropriate locations from [this box folder](https://utexas.box.com/s/7ur0fsr52nephxp96hs5dxm99rk2v1u0)
+  - To download the main dataset here (the [HuthLab fMRI passive listening dataset](https://openneuro.org/datasets/ds003020/versions/3.1.0)), run `python experiments/00_load_dataset.py` (will download the data using [datalad](https://github.com/datalad/datalad))
+- To make flatmaps, need to set [pycortex filestore](https://gallantlab.org/pycortex/auto_examples/quickstart/show_config.html) to `{root_dir}/ds003020/derivative/pycortex-db/`
+- The `data/decoding` folder contains a quickstart easy example for TR-level decoding
+  - It has everything needed, but if you want to visualize the results on a flatmap, you need to download the relevant PCs from [here](https://utexas.box.com/s/7ur0fsr52nephxp96hs5dxm99rk2v1u0)
 
 **Code**
 - Install using [uv](https://docs.astral.sh/uv/). Clone the repo, `cd` into the repo, run `uv add git+https://github.com/csinva/imodelsX`, then run `uv sync`. This will locally install the `neuro` package
-- set `neuro.config.root_dir/data` to where you put all the data
-  - loading responses
+- Useful functions
+  - Loading responses
     - `neuro.data.response_utils` function `load_response`
-    - loads responses from at `{neuro.config.root_dir}/ds003020/derivative/preprocessed_data/{subject}`, where they are stored in an h5 file for each story, e.g. `wheretheressmoke.h5`
-  - loading stimulus
+    - Loads responses from at `{neuro.config.root_dir}/ds003020/derivative/preprocessed_data/{subject}`, where they are stored in an h5 file for each story, e.g. `wheretheressmoke.h5`
+  - Loading stimulus
     - `ridge_utils.features.stim_utils` function `load_story_wordseqs`
-    - loads textgrids from `{root_dir}/ds003020/derivative/TextGrids`, where each story has a TextGrid file, e.g. `wheretheressmoke.TextGrid`
-    - uses `{root_dir}/ds003020/derivative/respdict.json` to get the length of each story
+    - Loads textgrids from `{root_dir}/ds003020/derivative/TextGrids`, where each story has a TextGrid file, e.g. `wheretheressmoke.TextGrid`
+    - Uses `{root_dir}/ds003020/derivative/respdict.json` to get the length of each story
 
 **Demo**
 - `python experiments/02_fit_encoding.py`
-    - running this script with no args runs a simple small run. This script takes many relevant arguments through argparse to run different experiments
+    - Running this script with no args runs a simple small run. This script takes many relevant arguments through argparse to run different experiments
 
 ### Reference
 - Other studies that build off the codebase here: Explaining speech encoding models ([Shimizu et al. 2025](https://arxiv.org/abs/2507.16080)), Induction-Gram ([Kim et al. 2024](https://arxiv.org/abs/2411.00066)), Vector in-context learning ([Zhuang et al. 2025](https://arxiv.org/abs/2410.05629))
-- big thanks to folks that released open-source brain-imaging datasets, especially the [HuthLab fMRI passive listening dataset](https://openneuro.org/datasets/ds003020/versions/3.1.0) and the [Podcast ECoG dataset](https://www.nature.com/articles/s41597-025-05462-2)
-- see related [fMRI experiments](https://github.com/csinva/fmri)
-- built from [this template](https://github.com/csinva/cookiecutter-ml-research)
+- Big thanks to folks that released open-source brain-imaging datasets, especially the [HuthLab fMRI passive listening dataset](https://openneuro.org/datasets/ds003020/versions/3.1.0) and the [Podcast ECoG dataset](https://www.nature.com/articles/s41597-025-05462-2)
+- See related [fMRI experiments](https://github.com/csinva/fmri)
+- Built from [this template](https://github.com/csinva/cookiecutter-ml-research)
