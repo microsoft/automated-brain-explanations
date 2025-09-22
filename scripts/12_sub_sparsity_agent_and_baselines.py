@@ -28,13 +28,13 @@ params_shared_dict = {
 
     # first run to perform and save feature selection #######################################
     # run with a single subject, which will do feature selection across UTS01-UTS03 automatically when feature_selection_alpha > 0
-    'subject': ['shared'],
-    'predict_subset': ['all', 'prefrontal', 'occipital', 'sensorimotor', 'cingulate', 'insula', 'parietal', 'temporal'],
+    # 'subject': ['shared'],
+    # 'predict_subset': ['all', 'prefrontal', 'occipital', 'sensorimotor', 'cingulate', 'insula', 'parietal', 'temporal'],
 
     # second, we can use selected features to fit ridge by changing subject to something besides shared #######################################
-    # 'subject': ['UTS01', 'UTS02', 'UTS03'],
-    # 'ndelays': [8],
-    # 'predict_subset': ['all', 'prefrontal', 'occipital', 'sensorimotor', 'cingulate', 'insula', 'parietal', 'temporal'],
+    'subject': ['UTS01', 'UTS02', 'UTS03'],
+    'ndelays': [8],
+    'predict_subset': ['all', 'prefrontal', 'occipital', 'sensorimotor', 'cingulate', 'insula', 'parietal', 'temporal'],
     
 }
 

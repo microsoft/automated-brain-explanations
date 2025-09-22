@@ -52,8 +52,10 @@ amlt_kwargs = {
     'amlt_file': join(repo_dir, 'scripts', 'launch.yaml'),
     'sku': 'G1-A100',
     # 'sku': 'G2-A100',    
-    # 'target___name': 'msrresrchvc',
-    'target___name': 'msroctovc',
+    'target___name': 'msrresrchvc',
+    # 'target___name': 'msroctovc',
+    # 'target___name': 'quickdevvc',
+
 
     # 'sku': '192G1-MI300X',
     # 'environment___image': 'amlt-sing/acpt-rocm6.2_ubuntu22.04_py3.10_pytorch2.5.1',
