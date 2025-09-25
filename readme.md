@@ -60,7 +60,7 @@ SASC takes in a text module and produces a natural explanation for it that descr
 
 SASC is similar to the nice [concurrent paper](https://github.com/openai/automated-interpretability) by OpenAI, but simplifies explanations to describe the function rather than produce token-level activations. This makes it simpler/faster, and makes it more effective at describing semantic functions from limited data (e.g. fMRI voxels) but worse at finding patterns that depend on sequences / ordering.
 
-To use, follow the instructions at <a href="https://github.com/csinva/imodelsX">imodelsX</a>.
+To use, follow the instructions at <a href="https://github.com/csinva/imodelsX">imodelsX</a>, install with `pip install imodelsx` then the below shows a quickstart example.
 
 </details>
 <br>
