@@ -46,7 +46,7 @@ CACHE_OPENAI_AGENT_DIR = join(FMRI_DIR_BLOB, 'qa', 'cache_openai_agent')
 
 
 ############## ECOG ###################
-ECOG_DIR = join(MNT_DIR, 'ecog')
+ECOG_DIR = join('/home/chansingh/kalytv', 'ecog')
 
 
 def setup_freesurfer():

@@ -2,12 +2,19 @@
 <html lang="en">
 
 <head>
-    <!--js-->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#222222" />
+    <title>Automated Brain Explanations</title>
+    <meta name="description"
+        content="Automated generation & testing of hypotheses about language processing in the brain using LLMs and large-scale neuroimaging datasets." />
+
+    <!--js core libs (kept minimal) -->
     <script src="js/jquery-3.6.1.min.js"></script>
     <script src="js/jquery-ui.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/markdown-it.min.js"></script>
-
 
     <!--css-->
     <link rel="stylesheet" href="css/jquery-ui.min.css">
@@ -15,25 +22,155 @@
     <link rel="stylesheet" href="css/custom.css">
 
     <script>
+        // Markdown loader
         const md = window.markdownit({
-            html: true,      // allow HTML inside Markdown
-            linkify: true,   // autolink URLs
+            html: true,
+            linkify: true,
             breaks: false
-
         });
-
-        // fetch('../readme.md')
-        fetch('https://raw.githubusercontent.com/microsoft/automated-brain-explanations/main/readme.md')
-            .then((response) => response.text())
-            .then((text) => {
-                document.getElementById('readme').innerHTML = md.render(text);
+        fetch('../readme.md')
+            // fetch('https://raw.githubusercontent.com/microsoft/automated-brain-explanations/main/readme.md')
+            .then(r => r.text())
+            .then(t => {
+                const el = document.getElementById('readme');
+                if (!el) return;
+                const hadContent = el.children.length > 0 || el.textContent.trim().length > 0;
+                // Append instead of overwrite
+                const rendered = md.render(t);
+                el.insertAdjacentHTML('beforeend', rendered);
+                // Only rename first h3 the first time we load (avoid re-labeling if multiple appends later)
+                if (!hadContent) {
+                    const firstH3 = el.querySelector('h3');
+                    if (firstH3) firstH3.innerHTML = 'Code details';
+                }
             })
-
+            .catch(err => console.error('Failed to load README.md', err));
     </script>
 
+    <script>
+        // Lightweight, slow, dark-mode friendly particle system.
+        // Enhancement: brighter, gently pulsing particles for higher visibility (still low CPU, respects reduced motion).
+        (function () {
+            const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const PARTICLE_COUNT = prefersReduced ? 24 : 80; // slight increase
+            const SPEED_BASE = 0.055; // very slow drift (slightly reduced to emphasize glow)
+            const canvasId = 'particles-canvas';
+            function init() {
+                let canvas = document.getElementById(canvasId);
+                if (!canvas) {
+                    canvas = document.createElement('canvas');
+                    canvas.id = canvasId;
+                    document.body.prepend(canvas);
+                }
+                const ctx = canvas.getContext('2d');
+                const DPR = Math.min(window.devicePixelRatio || 1, 2);
+                const resize = () => {
+                    canvas.width = window.innerWidth * DPR;
+                    canvas.height = window.innerHeight * DPR;
+                    canvas.style.width = window.innerWidth + 'px';
+                    canvas.style.height = window.innerHeight + 'px';
+                    ctx.scale(DPR, DPR);
+                };
+                resize();
+                window.addEventListener('resize', () => { ctx.setTransform(1, 0, 0, 1, 0, 0); resize(); });
+
+                // Particle model
+                const particles = Array.from({ length: PARTICLE_COUNT }, () => makeParticle());
+                function makeParticle() {
+                    const angle = Math.random() * Math.PI * 2;
+                    return {
+                        x: Math.random() * window.innerWidth,
+                        y: Math.random() * window.innerHeight,
+                        r: 0.9 + Math.random() * 3.0, // larger base radius
+                        vx: Math.cos(angle) * (SPEED_BASE + Math.random() * SPEED_BASE * 0.65),
+                        vy: Math.sin(angle) * (SPEED_BASE + Math.random() * SPEED_BASE * 0.65),
+                        hue: 200 + Math.random() * 55,
+                        alpha: 0.35 + Math.random() * 0.45, // brighter
+                        pulse: Math.random() * Math.PI * 2
+                    };
+                }
+
+                let lastTime = performance.now();
+                function frame(now) {
+                    const dt = Math.min(60, now - lastTime); // clamp in ms
+                    lastTime = now;
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    ctx.save();
+                    ctx.globalCompositeOperation = 'lighter';
+                    for (const p of particles) {
+                        p.x += p.vx * dt * 0.055; // scale dt for uniform motion
+                        p.y += p.vy * dt * 0.055;
+                        // Wrap around edges for infinite field feel
+                        if (p.x < -50) p.x = window.innerWidth + 50;
+                        if (p.x > window.innerWidth + 50) p.x = -50;
+                        if (p.y < -50) p.y = window.innerHeight + 50;
+                        if (p.y > window.innerHeight + 50) p.y = -50;
+                        // Pulsing radius
+                        const pulseFactor = 1 + 0.18 * Math.sin((now / 3800) + p.pulse);
+                        const radiusOuter = p.r * 4.6 * pulseFactor;
+                        const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, radiusOuter);
+                        gradient.addColorStop(0, `hsla(${p.hue}, 90%, 78%, ${p.alpha})`);
+                        gradient.addColorStop(0.35, `hsla(${p.hue + 10}, 85%, 55%, ${p.alpha * 0.55})`);
+                        gradient.addColorStop(1, 'hsla(210, 70%, 8%, 0)');
+                        ctx.fillStyle = gradient;
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, radiusOuter, 0, Math.PI * 2);
+                        ctx.fill();
+                        // Core spark
+                        ctx.fillStyle = `hsla(${p.hue}, 95%, 82%, ${p.alpha * 0.9})`;
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.r * 0.9 * pulseFactor, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    // Connection lines between nearby particles (after drawing glows)
+                    const maxDist = 165; // pixels
+                    const maxDist2 = maxDist * maxDist;
+                    for (let i = 0; i < particles.length; i++) {
+                        const a = particles[i];
+                        for (let j = i + 1; j < particles.length; j++) {
+                            const b = particles[j];
+                            const dx = a.x - b.x;
+                            const dy = a.y - b.y;
+                            const d2 = dx * dx + dy * dy;
+                            if (d2 < maxDist2) {
+                                const dist = Math.sqrt(d2);
+                                const alpha = (1 - dist / maxDist) * 0.35; // fade with distance
+                                if (alpha > 0.02) {
+                                    ctx.strokeStyle = `hsla(205, 55%, 72%, ${alpha})`;
+                                    ctx.lineWidth = 0.8;
+                                    ctx.beginPath();
+                                    ctx.moveTo(a.x, a.y);
+                                    ctx.lineTo(b.x, b.y);
+                                    ctx.stroke();
+                                }
+                            }
+                        }
+                    }
+                    ctx.restore();
+                    if (!paused) requestAnimationFrame(frame);
+                }
+                let paused = false;
+                if (!prefersReduced) requestAnimationFrame(frame);
+                else {
+                    // Static field if reduced motion
+                    for (const p of particles) p.vx = p.vy = 0;
+                    requestAnimationFrame(frame);
+                }
+                // Visibility pause (power saving)
+                document.addEventListener('visibilitychange', () => {
+                    if (document.hidden) paused = true; else { if (prefersReduced) return; paused = false; lastTime = performance.now(); requestAnimationFrame(frame); }
+                });
+            }
+            if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+        })();
+    </script>
 </head>
 
 <body class="wrapper" style="font-size:large">
+
+
+    <!-- Particle canvas injected by script (placeholder improves FOUC avoidance) -->
+    <canvas id="particles-canvas" aria-hidden="true"></canvas>
 
     <a href="https://github.com/microsoft/automated-brain-explanations" class="github-corner"
         aria-label="View source on GitHub">
@@ -49,8 +186,38 @@
         </svg>
     </a>
 
+    <div id="readme">
+        <div class="intro-crop">
+            <img align="center" style="width: 100%; max-width:100%;" src="img/intro.svg" id="intro">
+        </div>
+        <hr style="background: gray; ">
 
-    <div id="readme"></div>
+        We’ve been studying how to <i>scalably</i> answer this question using
+        <b>LLMs</b> and <b>large-scale brain-imaging datasets</b>.
+        Together, these let us automatically generate and test scientific hypotheses about language processing in the
+        brain,
+        potentially enabling a new paradigm for scientific research.
+        This repo contains code for running these analyses.
+    </div>
+
+    <script>
+        // Wrapper-based crop: keep top 70% of intro image, reclaim space by setting wrapper height
+        (function () {
+            const img = document.getElementById('intro');
+            if (!img) return;
+            const wrapper = img.closest('.intro-crop');
+            if (!wrapper) return;
+            function setCropHeight() {
+                // Use rendered height then reduce wrapper to 70%
+                const fullH = img.naturalHeight && img.naturalWidth
+                    ? (img.naturalHeight / img.naturalWidth) * img.clientWidth
+                    : img.getBoundingClientRect().height;
+                if (fullH) wrapper.style.height = (fullH * 0.7) + 'px';
+            }
+            if (img.complete) setCropHeight(); else img.addEventListener('load', setCropHeight, { once: true });
+            window.addEventListener('resize', setCropHeight);
+        })();
+    </script>
 
 </body>
 
