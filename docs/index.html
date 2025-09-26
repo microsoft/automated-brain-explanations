@@ -38,12 +38,12 @@
                 const rendered = md.render(markdown);
                 const temp = document.createElement('div');
                 temp.innerHTML = rendered;
-                // Use first h3 whose text matches 'papers' (case-insensitive). If none, append all.
-                let papersH3 = Array.from(temp.querySelectorAll('h3')).find(h => h.textContent.trim().toLowerCase() === 'papers');
-                if (papersH3) {
-                    if (!papersH3.id) papersH3.id = 'papers';
+                // Use first h3 whose text matches 'references' (case-insensitive). If none, append all.
+                let referencesH3 = Array.from(temp.querySelectorAll('h3')).find(h => h.textContent.trim().toLowerCase() === 'references');
+                if (referencesH3) {
+                    if (!referencesH3.id) referencesH3.id = 'references';
                     const frag = document.createDocumentFragment();
-                    let node = papersH3;
+                    let node = referencesH3;
                     while (node) { const next = node.nextSibling; frag.appendChild(node); node = next; }
                     el.appendChild(frag);
                 } else {

@@ -40,28 +40,46 @@ QA encoding models builds features by annotating a language stimulus with the an
 <summary>Aug-imodels: Augmenting interpretable models with large language models during training <a href="https://www.nature.com/articles/s41467-023-43713-1">(Singh et al. 2023, Nature communications)</a>
 </summary>
 <br>
-Recent large language models (LLMs), such as ChatGPT, have demonstrated remarkable prediction performance for a growing array of tasks. However, their proliferation into high-stakes domains and compute-limited settings has created a burgeoning need for interpretability and efficiency. We address this need by proposing Aug-imodels, a framework for leveraging the knowledge learned by LLMs to build extremely efficient and interpretable prediction models. Aug-imodels use LLMs during fitting but not during inference, allowing complete transparency and often a speed/memory improvement of greater than 1000x for inference compared to LLMs. We explore two instantiations of Aug-imodels in natural-language processing: Aug-Linear, which augments a linear model with decoupled embeddings from an LLM and Aug-Tree, which augments a decision tree with LLM feature expansions. Across a variety of text-classification datasets, both outperform their non-augmented, interpretable counterparts. Aug-Linear can even outperform much larger models, e.g. a 6-billion parameter GPT-J model, despite having 10,000x fewer parameters and being fully transparent. We further explore Aug-imodels in a natural-language fMRI study, where they generate interesting interpretations from scientific data.
+Aug-imodels is a framework for LLMs to build extremely efficient and interpretable prediction models, e.g. linear ngram models or decision trees. Aug-imodels use LLMs during fitting but not during inference, allowing complete transparency and dramatic speed improvements.
 </details>
 <details>
 <summary>QA-Emb: Crafting interpretable Embeddings by asking LLMs questions <a href="https://arxiv.org/abs/2405.16714">(Benara*, Singh*, et al. 2024, NeurIPS)</a>
 </summary>
 <br>
-Large language models (LLMs) have rapidly improved text embeddings for a growing array of natural-language processing tasks. However, their opaqueness and proliferation into scientific domains such as neuroscience have created a growing need for interpretability. Here, we ask whether we can obtain interpretable embeddings through LLM prompting. We introduce question-answering embeddings (QA-Emb), embeddings where each feature represents an answer to a yes/no question asked to an LLM. Training QA-Emb reduces to selecting a set of underlying questions rather than learning model weights.<br>
-We use QA-Emb to flexibly generate interpretable models for predicting fMRI voxel responses to language stimuli. QA-Emb significantly outperforms an established interpretable baseline, and does so while requiring very few questions. This paves the way towards building flexible feature spaces that can concretize and evaluate our understanding of semantic brain representations. We additionally find that QA-Emb can be effectively approximated with an efficient model, and we explore broader applications in simple NLP tasks.
+QA-Emb is a more general version of QA encoding models, that generally builds text embeddings by asking LLMs a series of yes/no questions.
 </details>
 <details>
 <summary>SASC: Explaining black box text modules in natural language with language models <a href="https://arxiv.org/abs/2305.09863">(Singh*, Hsu*, et al. 2023, NeurIPS workshop)</a>
 </summary>
 <br>
-SASC takes in a text module and produces a natural explanation for it that describes what it types of inputs elicit the largest response from the module (see Fig below). The GCT paper tests this in detail in an fMRI setting.
-<br>
-
-SASC is similar to the nice [concurrent paper](https://github.com/openai/automated-interpretability) by OpenAI, but simplifies explanations to describe the function rather than produce token-level activations. This makes it simpler/faster, and makes it more effective at describing semantic functions from limited data (e.g. fMRI voxels) but worse at finding patterns that depend on sequences / ordering.
-
-To use, follow the instructions at <a href="https://github.com/csinva/imodelsX">imodelsX</a>, install with `pip install imodelsx` then the below shows a quickstart example.
-
+SASC is a pipeline for generating natural language explanations of black-box text modules using LLMs and synthetic causal testing.
 </details>
 <br>
+
+- Other studies that build off the codebase here:
+
+**Finally, here are 3 studies that share the codebase here**:
+<details>
+<summary>Interpretable Embeddings of Speech Enhance and Explain Brain Encoding Performance of Audio Models
+ <a href="https://arxiv.org/abs/2507.16080">(Shimizu et al. 2025, arXiv)</a>
+</summary>
+<br>
+Using QA-Encoding models to analyze and improve black-box speech encoding models.
+</details>
+<details>
+<summary>Interpretable Next-token Prediction via the Generalized Induction Head<a href="https://arxiv.org/abs/2411.00066">(Kim*, Mantena*, et al. 2025, NeurIPS)</a>
+</summary>
+<br>
+Hand-engineering an induction head to retrieve features from the context can help improve interpretable fMRI encoding models.
+</details>
+<details>
+<summary>Vector-ICL: In-context Learning with Continuous Vector Representations <a href="https://openreview.net/pdf?id=xing7dDGh3">(Zhuang et al. 2025, ICLR)</a>
+</summary>
+<br>
+Can convert fMRI responses to continuous vector representations that can be used with LLMs to do few-shot decoding of QA features.
+</details>
+<br>
+
 
 ### Setting up
 
@@ -90,7 +108,6 @@ To use, follow the instructions at <a href="https://github.com/csinva/imodelsX">
     - Running this script with no args runs a simple small run. This script takes many relevant arguments through argparse to run different experiments
 
 ### External links
-- Other studies that build off the codebase here: Explaining speech encoding models ([Shimizu et al. 2025](https://arxiv.org/abs/2507.16080)), Induction-Gram ([Kim et al. 2024](https://arxiv.org/abs/2411.00066)), Vector in-context learning ([Zhuang et al. 2025](https://arxiv.org/abs/2410.05629))
 - Big thanks to folks that released open-source brain-imaging datasets, especially the [HuthLab fMRI passive listening dataset](https://openneuro.org/datasets/ds003020/versions/3.1.0) and the [Podcast ECoG dataset](https://www.nature.com/articles/s41597-025-05462-2)
 - See related [fMRI experiments](https://github.com/csinva/fmri)
 - Built from [this template](https://github.com/csinva/cookiecutter-ml-research)
