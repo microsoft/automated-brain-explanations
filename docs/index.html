@@ -213,13 +213,18 @@
         </div>
         <hr style="background: gray; ">
 
+        How does the brain process language?
         We’ve been studying how to <i>scalably</i> answer this question using
         <b>LLMs</b> and <b>large-scale brain-imaging datasets</b>.
         Together, these let us automatically generate and test scientific hypotheses about language processing in the
         brain,
         potentially enabling a new paradigm for scientific research.
-
-        Our starting point is Huth et al. 2016...
+        <br><br>
+        Our starting point is the work of <a href="https://www.nature.com/articles/nature17637">Huth et al.
+            2016</a>, who built predictive models of voxel responses to natural language stimuli (called encoding
+        models) using interpretable word features (called Eng1000).
+        They found that different brain areas are selective for different semantic categories, and that these categories
+        are organized in a complex, overlapping manner across cortex:
 
         <div style="text-align: center; margin: 1.5rem 0;">
             <div class="video-recolor-wrapper" style="max-width:100%;">
@@ -230,34 +235,50 @@
 
         <h1>QA encoding models</h1>
 
-        Modern data-driven encoding models are highly effective at predicting brain responses to language stimuli.
-        However, these models struggle to explain the underlying phenomena, ie what features of the stimulus drive the
-        response? We present Question Answering encoding models, a method for converting qualitative theories of
-        language selectivity into highly accurate, interpretable models of brain responses. QA encoding models annotate
-        a language stimulus by using a large language model to answer yes-no questions corresponding to qualitative
+        A lot has happened since 2016.
+        Deep learning flourished, and brought
+        encoding
+        models
+        based on
+        black-box
+        text embeddings that predicted brain responses <a href="https://openreview.net/pdf?id=2W4LxJbgec">way</a>
+        <a href="https://www.pnas.org/doi/abs/10.1073/pnas.2105646118">better</a>.
+        However, these modern models struggle to explain the underlying phenomena, i.e. what features of the stimulus
+        drive the response?
+        <br><br>
+        To solve this, we used QA encoding models, a method for converting qualitative language questions into highly
+        accurate, interpretable models of brain responses. QA encoding models annotate
+        a language stimulus by using a LLM to answer yes-no questions corresponding to qualitative
         theories.
-
+        Then we can just fit a linear model to predict brain responses from these answers.
+        <br>
         <div class="intro-crop" data-visible="70" id="qa_method_wrapper">
             <img align="center" style="width: 100%; max-width:100%;" src="img/qa_method.svg" id="qa_method">
         </div>
-
-        A compact QA encoding model that uses only 35 questions outperforms existing baselines at predicting
-        brain responses in both fMRI and ECoG data.
+        <br><br>
+        This works surprisingly well. With just 35 questions, a QA encoding model
+        outperforms existing baselines at predicting
+        brain responses in both fMRI and ECoG data (even black-box models).
 
         <div class="intro-crop" data-visible="80" id="qa_perf_wrapper">
             <img align="center" style="width: 100%; max-width:100%;" src="img/qa_perf.svg" id="qa_perf">
         </div>
 
         The model weights also provide easily interpretable maps of language
-        selectivity across cortex; these maps show quantitative agreement with meta-analyses of the existing literature
-        and selectivity maps identified in a follow-up fMRI experiment. These results demonstrate that LLMs can bridge
-        the widening gap between qualitative scientific theories and data-driven models.
+        selectivity across cortex.
+        The 35-question model is small enough that we can visualize the whole thing.
+        No feature importances or post-hoc summaries, just 35 questions and a map showing their linear weights for each
+        brain voxel:
 
         <img align="center" style="width: 100%; max-width:100%;" src="img/qa_map.jpeg" id="qa_map">
+        <br><br>
+        This opens the door to improve the speed of iteration on scientific hypotheses, as LLMs can quickly annotate and
+        test any verbalizable theory.
+        In the next section, we explore how we can we further verify these hypotheses in follow-up experiments.
 
         <h1>Generative causal testing</h1>
 
-        Representations from large language models are highly effective at predicting BOLD fMRI responses to language
+        Representations from LLMs are highly effective at predicting BOLD fMRI responses to language
         stimuli. However, these representations are largely opaque: it is unclear what features of the language stimulus
         drive the response in each brain area. We present generative causal testing (GCT), a framework for generating
         concise explanations of language selectivity in the brain from predictive models and then testing those

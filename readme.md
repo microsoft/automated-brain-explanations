@@ -56,8 +56,6 @@ SASC is a pipeline for generating natural language explanations of black-box tex
 </details>
 <br>
 
-- Other studies that build off the codebase here:
-
 **Finally, here are 3 studies that share the codebase here**:
 <details>
 <summary>Interpretable Embeddings of Speech Enhance and Explain Brain Encoding Performance of Audio Models
