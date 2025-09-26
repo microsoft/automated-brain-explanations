@@ -41,6 +41,7 @@ dependencies = [
     "pycortex",
     "imodelsx",
     "amlt>=10.16.5",
+    "cairosvg>=2.8.2",
 ]
 
 [project.optional-dependencies]

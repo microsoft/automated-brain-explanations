@@ -154,4 +154,6 @@ def quickshow(
             plt.savefig(fname_save, bbox_inches='tight')
             plt.savefig(fname_save.replace(".pdf", ".png"),
                         transparent=True, bbox_inches='tight')
+        else:
+            plt.savefig(fname_save, bbox_inches='tight', transparent=True)
         plt.close()

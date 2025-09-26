@@ -22,7 +22,7 @@ BEST_RESULTS_DIR_ENSEMBLE = join(FMRI_DIR_BLOB, 'encoding', 'may7')
 SPARSE_FEATS_DIR = join(FMRI_DIR_BLOB, 'qa', 'sparse_feats_shared')
 
 # gct stuff
-PROCESSED_DIR = join(FMRI_DIR_BLOB, 'qa', 'gct_processed')
+PROCESSED_DIR = join(FMRI_DIR_BLOB, 'qa', 'processed')
 GCT_RESPS_DIR = join(FMRI_DIR_BLOB, 'brain_tune', 'story_data')
 
 # general stuff
