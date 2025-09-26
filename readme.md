@@ -43,7 +43,7 @@ QA encoding models builds features by annotating a language stimulus with the an
 Aug-imodels is a framework for LLMs to build extremely efficient and interpretable prediction models, e.g. linear ngram models or decision trees. Aug-imodels use LLMs during fitting but not during inference, allowing complete transparency and dramatic speed improvements.
 </details>
 <details>
-<summary>QA-Emb: Crafting interpretable Embeddings by asking LLMs questions <a href="https://arxiv.org/abs/2405.16714">(Benara*, Singh*, et al. 2024, NeurIPS)</a>
+<summary>QA-Emb: Crafting interpretable embeddings by asking LLMs questions <a href="https://arxiv.org/abs/2405.16714">(Benara*, Singh*, et al. 2024, NeurIPS)</a>
 </summary>
 <br>
 QA-Emb is a more general version of QA encoding models, that generally builds text embeddings by asking LLMs a series of yes/no questions.
@@ -58,20 +58,20 @@ SASC is a pipeline for generating natural language explanations of black-box tex
 
 **Finally, here are 3 studies that share the codebase here**:
 <details>
-<summary>Interpretable Embeddings of Speech Enhance and Explain Brain Encoding Performance of Audio Models
+<summary>Interpretable embeddings of speech enhance and explain brain encoding performance of audio models
  <a href="https://arxiv.org/abs/2507.16080">(Shimizu et al. 2025, arXiv)</a>
 </summary>
 <br>
 Using QA-Encoding models to analyze and improve black-box speech encoding models.
 </details>
 <details>
-<summary>Interpretable Next-token Prediction via the Generalized Induction Head<a href="https://arxiv.org/abs/2411.00066">(Kim*, Mantena*, et al. 2025, NeurIPS)</a>
+<summary>Interpretable next-token prediction via the generalized induction head<a href="https://arxiv.org/abs/2411.00066">(Kim*, Mantena*, et al. 2025, NeurIPS)</a>
 </summary>
 <br>
 Hand-engineering an induction head to retrieve features from the context can help improve interpretable fMRI encoding models.
 </details>
 <details>
-<summary>Vector-ICL: In-context Learning with Continuous Vector Representations <a href="https://openreview.net/pdf?id=xing7dDGh3">(Zhuang et al. 2025, ICLR)</a>
+<summary>Vector-ICL: In-context learning with continuous vector representations <a href="https://openreview.net/pdf?id=xing7dDGh3">(Zhuang et al. 2025, ICLR)</a>
 </summary>
 <br>
 Can convert fMRI responses to continuous vector representations that can be used with LLMs to do few-shot decoding of QA features.

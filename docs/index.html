@@ -274,22 +274,30 @@
         <br><br>
         This opens the door to improve the speed of iteration on scientific hypotheses, as LLMs can quickly annotate and
         test any verbalizable theory.
+        We tested a lot more hypotheses in the paper, and made a lot more comparisons, e.g. to maps from <a
+            href="https://neurosynth.org/">the
+            literature</a>.
         In the next section, we explore how we can we further verify these hypotheses in follow-up experiments.
 
         <h1>Generative causal testing</h1>
 
-        Representations from LLMs are highly effective at predicting BOLD fMRI responses to language
-        stimuli. However, these representations are largely opaque: it is unclear what features of the language stimulus
-        drive the response in each brain area. We present generative causal testing (GCT), a framework for generating
+        To help test what features of a language stimulus
+        drive the response in each brain area, we present generative causal testing (GCT).
+        GCT is a framework for generating
         concise explanations of language selectivity in the brain from predictive models and then testing those
         explanations in follow-up experiments using LLM-generated stimuli.
-
+        <br><br>
+        Specifically, GCT tests explanations by building a story where each paragraph is designed to
+        align with a particular explanation, while maintaining overall coherence.
         <img align="center" style="width: 100%; max-width:100%;" src="img/gct_story_ex.svg" id="gct_story_ex">
 
-        .
-
+        We can then average over responses for paragraphs with a particular explanation
+        to estimate which brain areas are selective for that explanation. This recovers known selectivity maps and also
+        suggests some new ones:
         <img align="center" style="width: 100%; max-width:100%;" src="img/gct_averages.svg" id="gct_averages">
-
+        <br><br>
+        We can now compare these GCT-derived maps to the original QA encoding model maps to see how well they align.
+        Turns out the correlations are generally quite positive:
         <img align="center" style="width: 100%; max-width:100%;" src="img/gct_qa_corrs.svg" id="gct_qa_corrs">
 
         We did a lot more with GCT, including explaining
