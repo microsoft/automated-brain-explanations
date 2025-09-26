@@ -22,25 +22,47 @@
     <link rel="stylesheet" href="css/custom.css">
 
     <script>
-        // Markdown loader
-        const md = window.markdownit({
-            html: true,
-            linkify: true,
-            breaks: false
-        });
-        fetch('../readme.md')
-            // fetch('https://raw.githubusercontent.com/microsoft/automated-brain-explanations/main/readme.md')
-            .then(r => r.text())
-            .then(t => {
+        // Markdown loader with fallback: local ../readme.md first, remote raw GitHub if local fails
+        const md = window.markdownit({ html: true, linkify: true, breaks: false });
+        (async function loadReadme() {
+            const localURL = '../readme.md';
+            const remoteURL = 'https://raw.githubusercontent.com/microsoft/automated-brain-explanations/refs/heads/main/readme.md';
+            async function fetchText(url) {
+                const res = await fetch(url, { cache: 'no-cache' });
+                if (!res.ok) throw new Error('Fetch failed ' + res.status + ' ' + res.statusText);
+                return await res.text();
+            }
+            function appendFromPapers(markdown) {
                 const el = document.getElementById('readme');
                 if (!el) return;
-                const hadContent = el.children.length > 0 || el.textContent.trim().length > 0;
-                const introHeading = document.getElementById('introduction');
-                // Append instead of overwrite
-                const rendered = md.render(t);
-                el.insertAdjacentHTML('beforeend', rendered);
-            })
-            .catch(err => console.error('Failed to load README.md', err));
+                const rendered = md.render(markdown);
+                const temp = document.createElement('div');
+                temp.innerHTML = rendered;
+                // Use first h3 whose text matches 'papers' (case-insensitive). If none, append all.
+                let papersH3 = Array.from(temp.querySelectorAll('h3')).find(h => h.textContent.trim().toLowerCase() === 'papers');
+                if (papersH3) {
+                    if (!papersH3.id) papersH3.id = 'papers';
+                    const frag = document.createDocumentFragment();
+                    let node = papersH3;
+                    while (node) { const next = node.nextSibling; frag.appendChild(node); node = next; }
+                    el.appendChild(frag);
+                } else {
+                    el.insertAdjacentHTML('beforeend', rendered);
+                }
+            }
+            try {
+                const txt = await fetchText(localURL);
+                appendFromPapers(txt);
+            } catch (localErr) {
+                console.warn('Local README fetch failed, trying remote fallback:', localErr);
+                try {
+                    const txt2 = await fetchText(remoteURL);
+                    appendFromPapers(txt2);
+                } catch (remoteErr) {
+                    console.error('Both README fetches failed', remoteErr);
+                }
+            }
+        })();
     </script>
 
     <script>
@@ -177,10 +199,10 @@
         <nav>
             <ul class="links-list">
                 <li><a href="https://github.com/microsoft/automated-brain-explanations" target="_blank"
-                        rel="noopener">GitHub Repo</a></li>
+                        rel="noopener">💻 GitHub Repo</a></li>
                 <li><a href="https://www.biorxiv.org/content/10.1101/2025.08.12.669958v1" target="_blank"
-                        rel="noopener">QA Paper</a></li>
-                <li><a href="https://arxiv.org/abs/2410.00812" target="_blank" rel="noopener">GCT Paper</a></li>
+                        rel="noopener">📄 QA Paper</a></li>
+                <li><a href="https://arxiv.org/abs/2410.00812" target="_blank" rel="noopener">📄 GCT Paper</a></li>
             </ul>
         </nav>
     </div>
@@ -243,19 +265,26 @@
 
         <img align="center" style="width: 100%; max-width:100%;" src="img/gct_story_ex.svg" id="gct_story_ex">
 
-        This approach is successful at explaining
-        selectivity both in individual voxels and cortical regions of interest (ROIs), including newly identified
-        microROIs in prefrontal cortex. We show that explanatory accuracy is closely related to the predictive power and
-        stability of the underlying predictive models. Finally, we show that GCT can dissect fine-grained differences
-        between brain areas with similar functional selectivity. These results demonstrate that LLMs can be used to
-        bridge the widening gap between data-driven models and formal scientific theories.
+        .
 
         <img align="center" style="width: 100%; max-width:100%;" src="img/gct_averages.svg" id="gct_averages">
 
         <img align="center" style="width: 100%; max-width:100%;" src="img/gct_qa_corrs.svg" id="gct_qa_corrs">
 
-        <h1>Code and reproducibility</h1>
+        We did a lot more with GCT, including explaining
+        selectivity both in individual voxels and cortical regions of interest (ROIs), including newly identified
+        microROIs in prefrontal cortex.
+        We found that explanatory accuracy is closely related to the predictive power and
+        stability of the underlying predictive models.
+        Finally, we found that GCT can dissect fine-grained differences
+        between brain areas with similar functional selectivity.
+        <br><br>
+        <b>There is a lot more to be done!</b> We're just at the beginning of an exciting journey of LLM-powered
+        scientific
+        discovery. If you're interested in building off of this work, take a look at the code below and feel free to
+        reach out!
 
+        <h1>Code and reproducibility</h1>
     </div>
 
 

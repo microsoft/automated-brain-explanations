@@ -17,7 +17,7 @@
 
 -----
 
-### Papers
+### References
 
 **This repo contains code underlying 2 neuroscience studies:**
 
@@ -25,15 +25,13 @@
 <summary>Generative causal testing to bridge data-driven models and scientific theories in language neuroscience <a href="https://arxiv.org/abs/2410.00812">(Antonello*, Singh*, et al., 2024, arXiv)</a>
 </summary>
 <br>
-Representations from large language models are highly effective at predicting BOLD fMRI responses to language stimuli. However, these representations are largely opaque: it is unclear what features of the language stimulus drive the response in each brain area. We present generative causal testing (GCT), a framework for generating concise explanations of language selectivity in the brain from predictive models and then testing those explanations in follow-up experiments using LLM-generated stimuli. This approach is successful at explaining selectivity both in individual voxels and cortical regions of interest (ROIs), including newly identified microROIs in prefrontal cortex. We show that explanatory accuracy is closely related to the predictive power and stability of the underlying predictive models. Finally, we show that GCT can dissect fine-grained differences between brain areas with similar functional selectivity. These results demonstrate that LLMs can be used to bridge the widening gap between data-driven models and formal scientific theories.
+Generative causal testing (GCT) is a framework for generating concise explanations of language selectivity in the brain from predictive models and then testing those explanations in follow-up experiments using LLM-generated stimuli.
 </details>
 <details>
 <summary>Evaluating scientific theories as predictive models in language neuroscience <a href="https://www.biorxiv.org/content/10.1101/2025.08.12.669958v1">(Singh*, Antonello*, et al. 2025, bioRxiv)</a>
 </summary>
 <br>
-Modern data-driven encoding models are highly effective at predicting brain responses
-to language stimuli. However, these models struggle to explain the underlying phenomena,
-i.e. what features of the stimulus drive the response in each brain area? We present Question Answering encoding models, a method for converting qualitative theories of language selectivity in the brain into highly accurate, interpretable models of brain responses. QA encoding models annotate a language stimulus by using a large language model to answer yes-no questions corresponding to qualitative theories. A compact QA encoding model that uses only 35 questions outperforms existing baselines at predicting brain responses to language stimuli in both fMRI and ECoG data. The model weights also provide easily interpretable maps of language selectivity across cortex. We find that these selectivity maps quantitatively match meta-analyses of the existing literature. We further evaluate these selectivity maps in a follow-up fMRI experiment and find strong agreement between the maps and responses to synthetic stimuli designed to test their selectivity. These results demonstrate that LLMs can bridge the widening gap between qualitative scientific theories and data-driven models.
+QA encoding models builds features by annotating a language stimulus with the answers to yes-no questions using an LLM.
 </details>
 <br>
 
@@ -91,7 +89,7 @@ To use, follow the instructions at <a href="https://github.com/csinva/imodelsX">
 - `python experiments/02_fit_encoding.py`
     - Running this script with no args runs a simple small run. This script takes many relevant arguments through argparse to run different experiments
 
-### Reference
+### External links
 - Other studies that build off the codebase here: Explaining speech encoding models ([Shimizu et al. 2025](https://arxiv.org/abs/2507.16080)), Induction-Gram ([Kim et al. 2024](https://arxiv.org/abs/2411.00066)), Vector in-context learning ([Zhuang et al. 2025](https://arxiv.org/abs/2410.05629))
 - Big thanks to folks that released open-source brain-imaging datasets, especially the [HuthLab fMRI passive listening dataset](https://openneuro.org/datasets/ds003020/versions/3.1.0) and the [Podcast ECoG dataset](https://www.nature.com/articles/s41597-025-05462-2)
 - See related [fMRI experiments](https://github.com/csinva/fmri)

@@ -174,9 +174,29 @@ div, p, li, summary, details {
     position: relative;
 }
 
+/* Scaled-down heading sizes (was relying on browser defaults which were too large) */
+#readme h1 { font-size: clamp(1.9rem, 2.35vw, 2.35rem); }
+#readme h2 { font-size: clamp(1.5rem, 2.0vw, 2.0rem); }
+#readme h3 { font-size: clamp(1.25rem, 1.55vw, 1.55rem); }
+#readme h4 { font-size: clamp(1.1rem, 1.25vw, 1.3rem); }
+#readme h5 { font-size: clamp(1rem, 1.05vw, 1.1rem); }
+
 #readme h2, #readme h3 {
     padding-top: .8em;
     margin-top: 1.6em;
+}
+
+/* Enhanced vertical spacing above headings (except very first heading in content)
+   Provides clearer sectional separation without excessive bottom margin inflation. */
+#readme h1:not(:first-child) { margin-top: 2.25em; }
+#readme h2:not(:first-child) { margin-top: 1.95em; }
+#readme h3:not(:first-child) { margin-top: 1.75em; }
+#readme h4:not(:first-child) { margin-top: 1.55em; }
+#readme h5:not(:first-child) { margin-top: 1.4em; }
+
+/* Adjust following paragraph slight negative offset to keep visual grouping tight */
+#readme h2 + p, #readme h3 + p, #readme h4 + p, #readme h5 + p {
+    margin-top: 0.55em;
 }
 
 #readme h2::after {
@@ -373,7 +393,10 @@ summary:focus-visible::before { box-shadow: 0 0 0 2px #111, 0 0 0 4px var(--link
 @media (max-width: 900px) { #readme { padding: 1.35rem 1.2rem 2.1rem; } }
 @media (max-width: 600px) {
     .wrapper { padding-left: 1rem; padding-right: 1rem; }
-    #readme h1 { font-size: 1.9rem; }
+    /* Tighter mobile scaling */
+    #readme h1 { font-size: 1.75rem; }
+    #readme h2 { font-size: 1.4rem; }
+    #readme h3 { font-size: 1.18rem; }
 }
 
 /* Scrollbar global */
@@ -501,3 +524,14 @@ summary:focus-visible::before { box-shadow: 0 0 0 2px #111, 0 0 0 4px var(--link
 .links-floating a:hover, .links-floating a:focus-visible { background: rgba(255,255,255,0.05); color:#fff; outline:none; }
 .links-floating a:focus-visible { box-shadow: 0 0 0 2px #111, 0 0 0 4px var(--accent); }
 @media (max-width: 1400px) { .links-floating { display:none; } }
+
+/* Hardening: ensure vertical stacking for TOC & links panels even if external CSS (e.g., Bootstrap) injects flex row */
+.toc-floating nav ul, .links-floating nav ul {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 2px;
+    white-space: normal;
+}
+.toc-floating nav ul li, .links-floating nav ul li { display: block !important; }
+.toc-floating nav ul li a, .links-floating nav ul li a { width: 100%; }
