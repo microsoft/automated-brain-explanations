@@ -25,21 +25,17 @@ BEST_RUN = '/home/chansingh/mntv1/deep-fMRI/encoding/results_apr7/68936a10a548e2
 params_shared_dict = {
     # things to average over
     # 'use_cache': [1],
-    # 'nboots': [5],
     # 'encoding_model': ['ridge'],
     'use_test_setup': [0],
     'use_extract_only': [0],
-    'pc_components': [100, -1],
+    'pc_components': [100],
 
-    'subject': [f'UTS0{k}' for k in range(1, 4)],
+    'subject': [f'UTS0{k}' for k in range(1, 9)],
     # 'subject': [f'UTS0{k}' for k in range(4, 9)],
     # 'subject': ['UTS04'],
 
     # ['UTS01', 'UTS02', 'UTS03', 'UTS04', 'UTS05', 'UTS06', 'UTS07', 'UTS08']
-    'save_dir': ['/home/chansingh/mntv1/deep-fMRI/encoding/oct5_2025_pc_ablation'],
-    # 'save_dir': ['/home/chansingh/mntv1/deep-fMRI/encoding/jun8'],
-    # 'save_dir': ['/home/chansingh/mntv1/deep-fMRI/encoding/may7'],
-    # 'save_dir': ['/home/chansingh/mntv1/deep-fMRI/encoding/may27'],
+    'save_dir': ['/home/chansingh/mntv1/deep-fMRI/encoding/oct5_2025_linear_pc_ablation'],
     'use_eval_brain_drive': [0],
     # 'ndelays': [4, 8],
     'ndelays': [8],
@@ -54,55 +50,20 @@ params_coupled_dict = {
 
     [
         # baselines
-        ('eng1000', None, None, None),
+        # ('eng1000', None, None, None),
         # ('bert-base-uncased', None, None, None),
         # ('finetune_roberta-base-10', None, None, None),
         # ('finetune_roberta-base_binary-10', None, None, None),
     ]
     +
-
-    # llama versions
-    [
-        # (llama, None, None, embedding_layer)
-        # for llama in ['meta-llama/Llama-2-70b-hf', 'meta-llama/Meta-Llama-3-70B']
-        # for embedding_layer in [12, 24, 36, 48, 60]
-    ]
-    +
-
-    # qa versions
-    [
-        # ensemble1
-        # questions: v4, v5, v6, v4_boostexamples, v1, v2, v3_boostexamples, v3, 'v3_boostexamples_merged'
-        # ('qa_embedder', 'v3_boostexamples_merged', model, None)
-        # ('qa_embedder', 'v2', model, None)
-        # for model in [MIST7B, LLAMA8B, LLAMA8B_fewshot]
-        # for model in ['ensemble2']  # , LLAMA8B, LLAMA70B]
-    ]
-    +
-    # qa 70B
-    [
-        # ('qa_embedder', version, model, None)
-        # for version in ['v1']  # , 'v2']
-        # for version in ['v3_boostexamples']
-        # for model in [LLAMA70B]
-    ]
-    +
-    # qa agentic test 
-    [
-        # ensemble1
-        # questions: v4, v5, v6, v4_boostexamples, v1, v2, v3_boostexamples, v3, 'v3_boostexamples_merged'
-        ('qa_embedder', 'v1', model, None)
-        # ('qa_embedder', 'v2', model, None)
-        # for model in [MIST7B, LLAMA8B, LLAMA8B_fewshot]
-        for model in [MIST7B, LLAMA8B, LLAMA8B_fewshot, LLAMA70B, 'Qwen/Qwen3-8B', 'mistralai/Ministral-8B-Instruct-2410',]  # , LLAMA8B, LLAMA70B]
-    ]
-    +
-    ####################
-    # let's just skip llama 7B/8B
     [
         (llama, None, None, embedding_layer)
         for llama in ['meta-llama/Llama-2-7b-hf', 'meta-llama/Meta-Llama-3-8B']
-        for embedding_layer in [6, 12, 18, 24, 30]
+        for embedding_layer in [18] # [6, 12, 18, 24, 30]
+    ]
+    +
+    [
+        # ('qa_embedder', 'qs_35', 'ensemble2', None)
     ]
 
 }
@@ -125,7 +86,8 @@ submit_utils.run_args_list(
     script_name=script_name,
     unique_seeds='seed_stories',
     # amlt_kwargs=amlt_kwargs_cpu,
-    n_cpus=8,
+    # n_cpus=8,
+    gpu_ids=[0, 1, 2, 3],
     # actually_run=False,
     repeat_failed_jobs=True,
     shuffle=True,

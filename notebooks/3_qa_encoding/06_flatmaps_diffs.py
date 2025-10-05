@@ -2,7 +2,10 @@ import os
 import sys
 from os.path import dirname, join
 
-import analyze_helper
+import joblib
+from tqdm import tqdm
+
+from neuro import analyze_helper, config
 import cortex
 import imodelsx.process_results
 import numpy as np
@@ -10,12 +13,10 @@ from matplotlib import pyplot as plt
 from matplotlib.cm import ScalarMappable
 from matplotlib.colors import Normalize
 
-sys.path.append('..')
-path_to_repo = dirname(dirname(os.path.abspath(__file__)))
 
-
-def _save_flatmap(vals, subject, fname_save, clab=None, with_rois=False, cmap='RdBu', with_borders=False):
-    vabs = max(np.abs(vals))
+def _save_flatmap(vals, subject, fname_save, clab=None, with_rois=False, cmap='RdBu', with_borders=False, vabs=None):
+    if vabs is None:
+        vabs = max(np.abs(vals))
 
     # cmap = sns.diverging_palette(12, 210, as_cmap=True)
     # cmap = sns.diverging_palette(16, 240, as_cmap=True)
@@ -53,14 +54,20 @@ def get_corrs_single_question(results_dir='/home/chansingh/mntv1/deep-fMRI/encod
 
 
 if __name__ == '__main__':
-    results_dir = analyze_helper.best_results_dir
-    out_dir = join(path_to_repo, 'qa_results', 'diffs')
-    os.makedirs(out_dir, exist_ok=True)
     # ['qa_embedder', 'bert', 'single_question', 'llama']
-    feature_spaces = ['single_question']
+    # feature_spaces = ['single_question']
+    feature_spaces = ['llama']
+    vabs = 0.15
 
+
+
+    results_dir = config.BEST_RESULTS_DIR_ENSEMBLE
+    out_dir = join(config.REPO_DIR, 'results', 'qa', 'encoding_flatmap_diffs')
+    os.makedirs(out_dir, exist_ok=True)
     # load the results in to a pandas dataframe
-    r, cols_varied, mets = analyze_helper.load_clean_results(results_dir)
+    # r, cols_varied, mets = analyze_helper.load_clean_results(results_dir)
+    data = joblib.load(join(config.RESULTS_DIR_LOCAL, 'results_best_ensemble.pkl'))
+    r, cols_varied, mets = data['r'], data['cols_varied'], data['mets']
     r = r[r.qa_questions_version.isin(['', 'v3_boostexamples'])]
     r = r[r.num_stories == -1]
     r = r[r.feature_selection_alpha == -1]
@@ -70,7 +77,7 @@ if __name__ == '__main__':
             (r.qa_embedding_model != 'ensemble1'))]
     metric_sort = 'corrs_tune_pc_weighted_mean'
 
-    for subject in ['S03', 'S02', 'S01']:
+    for subject in tqdm(['S03', 'S02', 'S01']):
         args_qa = r[
             (r.subject == subject) *
             (r.feature_space.str.contains('qa_embedder'))
@@ -105,11 +112,11 @@ if __name__ == '__main__':
             clab = f'Test correlation ({lab_name_dict.get(feature_space, feature_space)})'
             fname_save = join(
                 out_dir, f'{subject}_{feature_space.replace("qa_embedder", "qa")}_flatmap.pdf')
-            _save_flatmap(corrs_baseline, subject, fname_save, clab=clab)
+            _save_flatmap(corrs_baseline, subject, fname_save, clab=clab, vabs=vabs)
 
             if not feature_space == 'qa_embedder':
                 fname_save = join(
                     out_dir, f'{subject}_qa-{feature_space.replace("qa_embedder", "qa")}_flatmap.pdf')
-                clab = f'Test correlation (QA-Emb - {lab_name_dict.get(feature_space, feature_space)})'
+                clab = f'Test correlation (QA - {lab_name_dict.get(feature_space, feature_space)})'
                 _save_flatmap(
-                    args_qa['corrs_test'] - corrs_baseline, subject, fname_save, clab=clab, cmap='RdBu_r')
+                    args_qa['corrs_test'] - corrs_baseline, subject, fname_save, clab=clab, cmap='RdBu_r', vabs=vabs)
