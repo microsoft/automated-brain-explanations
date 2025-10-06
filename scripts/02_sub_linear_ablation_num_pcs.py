@@ -47,23 +47,15 @@ params_shared_dict = {
 
 params_coupled_dict = {
     ('feature_space', 'qa_questions_version', 'qa_embedding_model', 'embedding_layer'):
-
     [
-        # baselines
+        # (llama, None, None, embedding_layer)
+        # for llama in ['meta-llama/Llama-2-7b-hf', 'meta-llama/Meta-Llama-3-8B']
+        # for embedding_layer in [6, 12, 18, 24, 30]
+    ]
+    +
+    [
         # ('eng1000', None, None, None),
-        # ('bert-base-uncased', None, None, None),
-        # ('finetune_roberta-base-10', None, None, None),
-        # ('finetune_roberta-base_binary-10', None, None, None),
-    ]
-    +
-    [
-        (llama, None, None, embedding_layer)
-        for llama in ['meta-llama/Llama-2-7b-hf', 'meta-llama/Meta-Llama-3-8B']
-        for embedding_layer in [18] # [6, 12, 18, 24, 30]
-    ]
-    +
-    [
-        # ('qa_embedder', 'qs_35', 'ensemble2', None)
+        ('qa_embedder', 'qs_35', 'ensemble1', None)
     ]
 
 }
@@ -76,20 +68,25 @@ args_list = submit_utils.get_args_list(
 script_name = join(repo_dir, 'experiments', '02_fit_encoding.py')
 amlt_kwargs = {
     'amlt_file': join(repo_dir, 'scripts', 'launch.yaml'),
-    'sku': '8C7',
-    # 'sku': '8C15',
+    # 'sku': '8C7',
+    'sku': '8C15',
     'mnt_rename': ('/home/chansingh/mntv1', '/mntv1'),
     'target___name': 'msrresrchvc',
+
+    'env': {
+        'HF_TOKEN': f'{open(expanduser("~/.HF_TOKEN"), "r").read().strip()}',
+    },
 }
 submit_utils.run_args_list(
     args_list,
     script_name=script_name,
     unique_seeds='seed_stories',
-    # amlt_kwargs=amlt_kwargs_cpu,
+    amlt_kwargs=amlt_kwargs,
     # n_cpus=8,
-    gpu_ids=[0, 1, 2, 3],
+    # gpu_ids=[0, 1, 2, 3],
+    # gpu_ids=[[0, 1], [2, 3]],
     # actually_run=False,
     repeat_failed_jobs=True,
-    shuffle=True,
-    cmd_python=f'export HF_TOKEN={open(expanduser("~/.HF_TOKEN"), "r").read().strip()}; .venv/bin/python',
+    # shuffle=True,
+    cmd_python=f'.venv/bin/python',
 )

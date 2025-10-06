@@ -119,6 +119,10 @@ amlt_kwargs = {
     # 'sku': '8C15',
     'mnt_rename': ('/home/chansingh/mntv1', '/mntv1'),
     'target___name': 'msrresrchvc',
+
+    'env': {
+        'HF_TOKEN': f'{open(expanduser("~/.HF_TOKEN"), "r").read().strip()}',
+    },
 }
 submit_utils.run_args_list(
     args_list,
@@ -129,5 +133,5 @@ submit_utils.run_args_list(
     # actually_run=False,
     repeat_failed_jobs=True,
     shuffle=True,
-    cmd_python=f'export HF_TOKEN={open(expanduser("~/.HF_TOKEN"), "r").read().strip()}; .venv/bin/python',
+    cmd_python=f'.venv/bin/python',
 )

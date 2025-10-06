@@ -62,7 +62,8 @@ if __name__ == '__main__':
 
 
     results_dir = config.BEST_RESULTS_DIR_ENSEMBLE
-    out_dir = join(config.REPO_DIR, 'results', 'qa', 'encoding_flatmap_diffs')
+    # out_dir = join(config.REPO_DIR, 'results', 'qa', 'encoding_flatmap_diffs')
+    out_dir = 'flatmaps_diffs'
     os.makedirs(out_dir, exist_ok=True)
     # load the results in to a pandas dataframe
     # r, cols_varied, mets = analyze_helper.load_clean_results(results_dir)

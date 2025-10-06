@@ -35,7 +35,7 @@ params_shared_dict = {
     # 'save_dir': ['/home/chansingh/mntv1/deep-fMRI/encoding/may27'],
     # 'save_dir': ['/home/chansingh/mntv1/deep-fMRI/encoding/jun8'],
     'save_dir': ['/home/chansingh/mntv1/deep-fMRI/encoding/jul12_2025'],
-    'seed_stories': range(8),
+    # 'seed_stories': range(8),
 }
 
 params_coupled_dict = {
@@ -59,13 +59,13 @@ params_coupled_dict = {
 
     # qa versions
     [
-        ('qa_embedder', version, model, None)
-        for version in ['hypothesae']
+        # ('qa_embedder', version, model, None)
+        # for version in ['hypothesae']
         # for version in ['v1neurosynth']
         # for version in ['v3_boostexamples']
         #     # ensemble1, v4, v5, v6, v4_boostexamples
         # # for version in ['v1', 'v2', 'v3_boostexamples', 'v3']
-        for model in [LLAMA8B]
+        # for model in [LLAMA8B]
         # for model in [MIST7B, LLAMA8B, LLAMA8B_fewshot]
         # for model in [LLAMA8B_fewshot]
         # for model in [LLAMA70B]
@@ -73,13 +73,13 @@ params_coupled_dict = {
         # for model in ['Qwen/Qwen3-8B', 'google/gemma-2-9b-it', 'mistralai/Ministral-8B-Instruct-2410',]
         # for model in ['Qwen/Qwen3-8B', 'mistralai/Ministral-8B-Instruct-2410',]
     ]
-
+    +
     # let's just skip llama 7B/8B
-    # [
-        # (llama, None, None, embedding_layer)
-        # for llama in ['meta-llama/Llama-2-7b-hf', 'meta-llama/Meta-Llama-3-8B']
-        # for embedding_layer in [6, 12, 18, 24, 30]
-    # ]
+    [
+        (llama, None, None, embedding_layer)
+        for llama in ['meta-llama/Llama-2-7b-hf', 'meta-llama/Meta-Llama-3-8B']
+        for embedding_layer in [6, 12, 18, 24, 30]
+    ]
 
 }
 
@@ -92,18 +92,20 @@ args_list = submit_utils.get_args_list(
 
 script_name = join(repo_dir, 'experiments', '02_fit_encoding.py')
 amlt_kwargs = {
-    # change this to run a cpu job
     'amlt_file': join(repo_dir, 'scripts', 'launch.yaml'),
-    'sku': 'G1-A100',
-    # 'sku': 'G2-A100',    
-    'target___name': 'msrresrchvc',
+    #'sku': '10C3', # 4 cpus
+    
+    # 'sku': '40G1-A100',
+    'sku': '40G2-A100',
+    # 'sku': 'G2-A100',
+    'target___name': 'palisades26',
+    # 'target___name': 'msrresrchvc',
     # 'target___name': 'msroctovc',
-
-    # 'sku': '192G1-MI300X',
-    # 'environment___image': 'amlt-sing/acpt-rocm6.2_ubuntu22.04_py3.10_pytorch2.5.1',
-    # 'target___name': 'whitney16',
-
     'mnt_rename': ('/home/chansingh/mntv1', '/mntv1'),
+
+    'env': {
+        'HF_TOKEN': f'{open(expanduser("~/.HF_TOKEN"), "r").read().strip()}',
+    },
 }
 submit_utils.run_args_list(
     args_list,
@@ -117,5 +119,5 @@ submit_utils.run_args_list(
     # actually_run=False,
     # shuffle=True,
     # cmd_python=f'export HF_TOKEN={open(expanduser("~/.HF_TOKEN"), "r").read().strip()}; python',
-    cmd_python=f'export HF_TOKEN={open(expanduser("~/.HF_TOKEN"), "r").read().strip()}; .venv/bin/python',
+    cmd_python=f'.venv/bin/python',
 )

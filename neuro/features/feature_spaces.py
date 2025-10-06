@@ -271,9 +271,9 @@ def get_llm_vectors(
     embedding_model = None  # only initialize if needed
     if feature_space == 'qa_embedder' or feature_space == 'qa_agent':
         logging.info(
-            f'extracting {feature_space} {qa_questions_version} {qa_embedding_model} embs...')
+            f'extracting QA {feature_space} {qa_questions_version} {qa_embedding_model} embs...')
     else:
-        logging.info(f'extracting {feature_space} {qa_questions_version} embs...')
+        logging.info(f'extracting non-QA {feature_space} {qa_questions_version} embs...')
 
     for story_num, story in enumerate(story_names):
         # qa agent does caching per-question per-story, so has its own handling
