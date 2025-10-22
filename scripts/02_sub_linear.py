@@ -29,7 +29,7 @@ params_shared_dict = {
     # 'encoding_model': ['ridge'],
     'use_test_setup': [0],
     'use_extract_only': [0],
-    'pc_components': [100, -1],
+    'pc_components': [100],
 
     'subject': [f'UTS0{k}' for k in range(1, 4)],
     # 'subject': [f'UTS0{k}' for k in range(4, 9)],

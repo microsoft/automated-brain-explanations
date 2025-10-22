@@ -28,8 +28,10 @@ params_shared_dict = {
     # 'encoding_model': ['ridge'],
     'use_test_setup': [0],
     'use_extract_only': [0],
-    'pc_components': [100],
+    # 'pc_components': [100, -1],
+    'pc_components': [-1],
 
+    # 'subject': [f'UTS0{k}' for k in range(1, 4)],
     'subject': [f'UTS0{k}' for k in range(1, 9)],
     # 'subject': [f'UTS0{k}' for k in range(4, 9)],
     # 'subject': ['UTS04'],
@@ -48,13 +50,13 @@ params_shared_dict = {
 params_coupled_dict = {
     ('feature_space', 'qa_questions_version', 'qa_embedding_model', 'embedding_layer'):
     [
-        # (llama, None, None, embedding_layer)
-        # for llama in ['meta-llama/Llama-2-7b-hf', 'meta-llama/Meta-Llama-3-8B']
-        # for embedding_layer in [6, 12, 18, 24, 30]
+        (llama, None, None, embedding_layer)
+        for llama in ['meta-llama/Llama-2-7b-hf', 'meta-llama/Meta-Llama-3-8B']
+        for embedding_layer in [6, 12, 18, 24, 30]
     ]
     +
     [
-        # ('eng1000', None, None, None),
+        ('eng1000', None, None, None),
         ('qa_embedder', 'qs_35', 'ensemble1', None)
     ]
 
@@ -69,7 +71,8 @@ script_name = join(repo_dir, 'experiments', '02_fit_encoding.py')
 amlt_kwargs = {
     'amlt_file': join(repo_dir, 'scripts', 'launch.yaml'),
     # 'sku': '8C7',
-    'sku': '8C15',
+    # 'sku': '8C15',
+    'sku': '8C30',
     'mnt_rename': ('/home/chansingh/mntv1', '/mntv1'),
     'target___name': 'msrresrchvc',
 

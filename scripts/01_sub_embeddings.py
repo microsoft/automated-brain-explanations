@@ -35,7 +35,7 @@ params_shared_dict = {
     # 'save_dir': ['/home/chansingh/mntv1/deep-fMRI/encoding/may27'],
     # 'save_dir': ['/home/chansingh/mntv1/deep-fMRI/encoding/jun8'],
     'save_dir': ['/home/chansingh/mntv1/deep-fMRI/encoding/jul12_2025'],
-    # 'seed_stories': range(8),
+    'seed_stories': range(32),
 }
 
 params_coupled_dict = {
@@ -76,9 +76,13 @@ params_coupled_dict = {
     +
     # let's just skip llama 7B/8B
     [
-        (llama, None, None, embedding_layer)
-        for llama in ['meta-llama/Llama-2-7b-hf', 'meta-llama/Meta-Llama-3-8B']
-        for embedding_layer in [6, 12, 18, 24, 30]
+        # (llama, None, None, embedding_layer)
+        # for llama in ['meta-llama/Llama-2-7b-hf', 'meta-llama/Meta-Llama-3-8B']
+        # for embedding_layer in [6, 12, 18, 24, 30]
+    ]
+    + 
+    [
+        ('qa_embedder', 'qs_35', 'ensemble1', None)
     ]
 
 }
@@ -96,7 +100,7 @@ amlt_kwargs = {
     #'sku': '10C3', # 4 cpus
     
     # 'sku': '40G1-A100',
-    'sku': '40G2-A100',
+    'sku': '40G4-A100',
     # 'sku': 'G2-A100',
     'target___name': 'palisades26',
     # 'target___name': 'msrresrchvc',
