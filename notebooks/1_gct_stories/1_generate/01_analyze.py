@@ -21,8 +21,6 @@ from neuro import analyze_helper, viz
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from neuro.config import REGION_IDXS_DIR
 import torch
-from transformers import set_seed
-
 
 def get_avg_weight_llama70(subject):
     data = joblib.load(join(config.RESULTS_DIR_LOCAL, 'results_best_ensemble.pkl'))
@@ -88,48 +86,30 @@ def generate_with_steering(
         wt_vec,
         prompt = "Here is the first paragraph of a story:",
         vec_multiplier = 0,
-        max_new_tokens = 10,
-        sampling_params = {},
-        seed = 42,
+        max_new_tokens = 10
 ):
-    
-    device = next(model.model.layers[emb_layer].parameters()).device
+    layer = model.model.layers[emb_layer]
+    device = next(model.parameters()).device
     dtype = next(model.parameters()).dtype
-    intervention_vec = torch.tensor(
-        wt_vec, device=device, dtype=dtype
-    ) * vec_multiplier
+    intervention_vec = torch.tensor(wt_vec,
+                                    device=device,
+                                    dtype=dtype) * vec_multiplier
+    intervention_vec_b = intervention_vec.view(1, -1)
 
     inputs = tokenizer(prompt, return_tensors="pt")
     embed_device = model.get_input_embeddings().weight.device
     inputs = {k: v.to(embed_device) for k, v in inputs.items()}
-
-
-    # device = next(model.parameters()).device
-    # dtype = next(model.parameters()).dtype
-    # intervention_vec = torch.tensor(
-    #     wt_vec, dtype=dtype
-    # ).to('cuda') * vec_multiplier
-
-    # inputs = tokenizer(prompt, return_tensors="pt").to('cuda')
-    # # embed_device = model.get_input_embeddings().weight.device
-    # # inputs = {k: v.to('cuda') for k, v in inputs.items()}
-
-
-
     pbar = tqdm(desc="Generating", unit="tok", total=max_new_tokens)
-    layer = model.model.layers[emb_layer]
-    handle = layer.register_forward_hook(_add_vector_to_last_token_hook(intervention_vec.view(1, -1), pbar))
+    handle = layer.register_forward_hook(_add_vector_to_last_token_hook(intervention_vec_b, pbar))
 
 
     try:
-        set_seed(seed)
         out = model.generate(
             **inputs,
-            **sampling_params,
-            # do_sample=True,
+            max_new_tokens=max_new_tokens,
+            do_sample=False,
             # temperature=0.8,
             # top_p=0.95,
-            max_new_tokens=max_new_tokens,
             use_cache=True,  # hook will fire on prefill + each decode step
             pad_token_id=tokenizer.eos_token_id,
         )
@@ -144,22 +124,14 @@ def generate_with_steering(
 if __name__ == "__main__":
     # Load weight
     subject = 'S02'
-    max_new_tokens = 100
+    max_new_tokens = 25
     rois = ['RSC', 'OPA', 'PPA', 'IPS', 'pSTS', 'sPMv', 'EBA', 'OFA']
-    sampling_params = {
-        'do_sample': True,
-        'top_p': 0.9,
-        'temperature': 0.8,
-    }
-    vec_multipliers = np.logspace(2, 5, 40)
+    # roi = 'RSC' # # rois_list = 
+    
+    vec_multipliers = np.logspace(0, 6, 20)
 
-
-    # load weights and model
-    print('selecting & loading weights...')
+    print('loading weights...')
     wt, emb_layer = get_avg_weight_llama70(subject)
-    print('wt.shape', wt.shape, 'emb_layer', emb_layer)
-    # print('TESTING ONLY UNCOMMENT THIS')
-    # wt, emb_layer = np.zeros((8192, 94251)), 36 # for testing only
 
     print('loading model...')
     model_name = "meta-llama/Meta-Llama-3-70B"
@@ -171,12 +143,10 @@ if __name__ == "__main__":
     ).eval()
 
     print('generating...')
+    
+    
     for roi in rois:
-        if sampling_params['do_sample']:
-            save_dir = f'./repr_steering/sampling_p={sampling_params["top_p"]}_t={sampling_params["temperature"]}/{roi}'
-        else:
-            save_dir = f'./repr_steering/greedy/{roi}'
-
+        save_dir = f'./output/{roi}'
         os.makedirs(save_dir, exist_ok=True)
         for i in tqdm(range(len(vec_multipliers))):
             fname = join(save_dir, f'generated_paragraph_steered_{vec_multipliers[i]:.2f}.txt')
@@ -193,8 +163,7 @@ if __name__ == "__main__":
                     wt_vec,
                     prompt = "Here is the first paragraph of a story:",
                     vec_multiplier = vec_multiplier,
-                    max_new_tokens = max_new_tokens,
-                    sampling_params = sampling_params,
+                    max_new_tokens = max_new_tokens
             )
             print(paragraph_steered)
             with open(fname, 'w') as f:
