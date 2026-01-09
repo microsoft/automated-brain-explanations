@@ -194,26 +194,29 @@ def get_rows_voxels(subject: str, setting="default", fname_suffix=""):
                  f"notebooks/1_gct_stories/0_voxel_select/rows_qa_mar9_2025{fname_suffix}.pkl")
         )
 
-    elif setting == "roi":
-        # roi_rows_file = join(
-        # REPO_DIR, f"notebooks_stories/0_voxel_select/rows_roi_{subject.lower()}_may31.pkl")
-        roi_rows_file = join(
-            config.REPO_DIR,
-            f"notebooks_stories/0_voxel_select/rows_roi_{subject.lower()}_nov30{fname_suffix}.pkl",
-        )
+    elif setting == "roi" or setting == "roi_steered":
+        if subject == 'UTS02':
+            roi_rows_file = join(
+                config.REPO_DIR, f"notebooks/1_gct_stories/0_voxel_select/rows_roi_{subject.lower()}_may31.pkl")
+        else:
+            raise ValueError('Double-check with notebooks')
+            # roi_rows_file = join
+                # config.REPO_DIR,
+                # f"notebooks/1_gct_stories/0_voxel_select/rows_roi_{subject.lower()}_nov30{fname_suffix}.pkl",
+            # )
         return joblib.load(roi_rows_file)
 
     # UTS02 - Pilot voxels
-    if setting in ["default", "interactions"]:
+    if setting in ["default", "interactions", "default_steered"]:
         VOXEL_DICT_FNAMES = {
-            "UTS02": "notebooks_stories/0_voxel_select/default/uts02_concepts_pilot_mar22.json",
-            "UTS01": "notebooks_stories/0_voxel_select/default/uts01_concepts_pilot_jun14.json",
-            "UTS03": "notebooks_stories/0_voxel_select/default/uts03_concepts_pilot_jun14.json",
+            "UTS02": "notebooks/1_gct_stories/0_voxel_select/default/uts02_concepts_pilot_mar22.json",
+            "UTS01": "notebooks/1_gct_stories/0_voxel_select/default/uts01_concepts_pilot_jun14.json",
+            "UTS03": "notebooks/1_gct_stories/0_voxel_select/default/uts03_concepts_pilot_jun14.json",
         }
 
     elif setting == "polysemantic":
         VOXEL_DICT_FNAMES = {
-            k: f"notebooks_stories/0_voxel_select/polysemantic/polysemantic_{k}.json"
+            k: f"notebooks/1_gct_stories/0_voxel_select/polysemantic/polysemantic_{k}.json"
             for k in ["UTS01", "UTS02", "UTS03"]
         }
     voxels_dict = json.load(
@@ -222,9 +225,9 @@ def get_rows_voxels(subject: str, setting="default", fname_suffix=""):
                         for x in sum(list(voxels_dict.values()), [])])
     vals.columns = ["expl", "subject", "module_num"]
 
-    if setting in ["default", "polysemantic"]:
+    if setting in ["default", "polysemantic", "default_steered"]:
         # filter vals
-        if setting == "default":
+        if setting == "default" or setting == "default_steered":
             voxel_nums = VOXEL_DICT[subject]
             print(
                 "len(voxel_nums)",
@@ -251,7 +254,7 @@ def get_rows_voxels(subject: str, setting="default", fname_suffix=""):
             polysemantic_ngrams = joblib.load(
                 join(
                     config.REPO_DIR,
-                    f"notebooks_stories/0_voxel_select/polysemantic/polysemantic_ngrams_{subject}.pkl",
+                    f"notebooks/1_gct_stories/0_voxel_select/polysemantic/polysemantic_ngrams_{subject}.pkl",
                 )
             )
         else:

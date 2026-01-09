@@ -67,6 +67,7 @@ def get_paragraphs(
     prefix_first="Write the beginning paragraph of a story about",
     prefix_next="Write the next paragraph of the story, but now make it about",
     cache_dir="~/.cache/llm_stories",
+    apply_steering=False,
 ):
     """
     Example messages
@@ -238,6 +239,13 @@ def process_and_add_scores(r: pd.DataFrame, add_bert_scores=False):
 
 def get_prompt_templates(version):
     PROMPTS = {
+        # used without explanations
+        'v1_steered': {
+            "prefix_first": "Here is the first paragraph of an interesting story:",
+            "prefix_next": "",
+            "suffix": "",
+
+        },
         # used for may 31 2024 onwards, helps clean up prompts
         "v6_noun": {
             "prefix_first": "Write the first paragraph of an interesting story told in first person. The story should have a plot and characters. The first paragraph of the story should contain many examples of",
@@ -298,6 +306,9 @@ def get_prompts(expls: List[str], examples_list: List[str], version):
             prompt_continue.format(expl=expl, examples=examples)
             for (expl, examples) in zip(expls[1:], examples_list[1:])
         ]
+    elif 'steered' in version:
+        prompts = [prompt_init] + ['Here is the next paragraph:'] * (len(expls) - 1)
+
     else:
         raise ValueError(version, "not supported in get_prompts")
 

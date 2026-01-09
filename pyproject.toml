@@ -43,6 +43,7 @@ dependencies = [
     "amlt>=10.16.5",
     "cairosvg>=2.8.2",
     "sentencepiece>=0.2.1",
+    "bert-score>=0.3.13",
 ]
 
 [project.optional-dependencies]

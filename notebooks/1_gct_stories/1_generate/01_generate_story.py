@@ -4,14 +4,14 @@ from os.path import join
 
 import joblib
 import pandas as pd
+import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
 import neuro.sasc
 import neuro.sasc.generate_helper
 from neuro import config
-
-sys.path.append('../0_voxel_select')
-
-sys.path.append(join(config.REPO_DIR, "notebooks_stories", "0_voxel_select"))
+from neuro.repr_steering import generate_with_steering, get_avg_weight_llama70, select_weight_for_roi
+from neuro import get_voxels
 
 
 def get_rows_and_prompts_default(
@@ -46,11 +46,11 @@ def get_rows_and_prompts_default(
     PV = neuro.sasc.generate_helper.get_prompt_templates(version)
     prompts = neuro.sasc.generate_helper.get_prompts(
         expls, examples_list, version)
-    if 'prompt_suffix' in rows.columns:
+    if 'prompt_suffix' in rows.columns and not 'steered' in version:
         prompts = [p + row.prompt_suffix for p,
                    row in zip(prompts, rows.itertuples())]
-    for p in prompts:
-        print(p)
+    # for p in prompts:
+        # print(p)
 
     return rows, prompts, PV
 
@@ -102,7 +102,6 @@ def get_rows_and_prompts_interactions(
 
 
 if __name__ == "__main__":
-    import get_voxels
     generate_paragraphs = False
 
     VERSIONS = {
@@ -112,6 +111,10 @@ if __name__ == "__main__":
         "polysemantic": "v5_noun",
         'qa': 'v6_noun',
         'roi': 'v6_noun',
+
+        
+        'default_steered': 'v1_steered',
+        'roi_steered': 'v1_steered',
     }
     # iterate over seeds
     seeds = range(1, 4)
@@ -128,18 +131,21 @@ if __name__ == "__main__":
     # increased for roi stories
     n_examples_per_prompt = 5
     n_examples_per_prompt_to_consider = 9
-    fname_suffix = '_v1'
+    # fname_suffix = '_v1'
+    fname_suffix = ''
     pad_beginning_and_end = True
     for setting in [
         # "interactions",
         # "default",
         # "polysemantic",
-        'qa',
+        # 'qa',
         # 'roi',
+        # 'default_steered',
+        'roi_steered',
     ]:  # default, interactions, polysemantic
         for subject in [
-            # "UTS02",
-            "UTS03",
+            "UTS02",
+            # "UTS03",
         ]:  # , "UTS03"]:  # ["UTS01", "UTS03"]:
             for seed in seeds:
                 # for version in ["v5_noun"]:
@@ -149,11 +155,12 @@ if __name__ == "__main__":
                 # EXPT_NAME = f"{subject.lower()}___qa_may31___seed={seed}"
                 # EXPT_NAME = f"{subject.lower()}___roi_may31___seed={seed}"
                 # EXPT_NAME = f"{subject.lower()}___roi_nov30___seed={seed}{fname_suffix}"
-                EXPT_NAME = f"{subject.lower()}___qa_mar9_2025___seed={seed}{fname_suffix}"
+                # EXPT_NAME = f"{subject.lower()}___qa_mar9_2025___seed={seed}{fname_suffix}"
+                EXPT_NAME = f"{subject.lower()}____roi_steered_jan8_2026___seed={seed}{fname_suffix}"
                 EXPT_DIR = join(STORIES_DIR, setting, EXPT_NAME)
                 os.makedirs(EXPT_DIR, exist_ok=True)
 
-                if setting in ["default", "polysemantic", 'qa', 'roi',]:
+                if setting in ["default", "polysemantic", 'qa', 'roi', 'default_steered', 'roi_steered']:
                     rows, prompts, PV = get_rows_and_prompts_default(
                         subject,
                         setting,
@@ -200,35 +207,69 @@ if __name__ == "__main__":
 
                 # save
                 # generate paragraphs
-                paragraphs = neuro.sasc.generate_helper.get_paragraphs(
-                    prompts,
-                    checkpoint="gpt-4o",
-                    # checkpoint="gpt-4",
-                    prefix_first=PV["prefix_first"] if "prefix_first" in PV else None,
-                    prefix_next=PV["prefix_next"] if "prefix_next" in PV else None,
-                    cache_dir="/home/chansingh/cache/llm_stories_may8",
-                )
-                if pad_beginning_and_end:
-                    START_PARAGRAPH = 'You are about to read a story told in the first person. Please pay attention to the details of the story.'
-                    END_PARAGRAPH = 'The narrative story has now concluded. Hope you enjoyed passively reading the story.'
-                    paragraphs = [START_PARAGRAPH] + \
-                        paragraphs + [END_PARAGRAPH]
-                    prompts = ['START'] + prompts + ['END']
-                    DUMMY_START = pd.DataFrame(
-                        [{'expl': 'START', 'top_ngrams_module_correct': [],
-                            'subject': subject, 'prompt_suffix': ''}])
-                    DUMMY_END = pd.DataFrame(
-                        [{'expl': 'END', 'top_ngrams_module_correct': [],
-                            'subject': subject, 'prompt_suffix': ''}])
-                    rows = pd.concat([DUMMY_START, rows, DUMMY_END])
+                if not 'steered' in version:
+                    paragraphs = neuro.sasc.generate_helper.get_paragraphs(
+                        prompts,
+                        checkpoint="gpt-4o",
+                        # checkpoint="gpt-4",
+                        prefix_first=PV["prefix_first"] if "prefix_first" in PV else None,
+                        prefix_next=PV["prefix_next"] if "prefix_next" in PV else None,
+                        cache_dir="/home/chansingh/cache/llm_stories_may8",
+                    )
+                else:
+                    print(rows)
+                    model_name = "meta-llama/Meta-Llama-3-70B"
+                    tokenizer = AutoTokenizer.from_pretrained(model_name)
+                    model = AutoModelForCausalLM.from_pretrained(
+                        model_name,
+                        device_map="auto",
+                        torch_dtype=torch.bfloat16,
+                    ).eval()
 
-                    # overwrite rows
-                    rows.to_csv(join(EXPT_DIR, "rows.csv"), index=False)
-                    rows.to_pickle(join(EXPT_DIR, "rows.pkl"))
+                    subj = subject.replace('UTS', 'S')
+                    wt, emb_layer = get_avg_weight_llama70(subj)
+                    VEC_MULTIPLIERS_SELECTED = {
+                        'S02': 316.22776601683796,
+                        'S03': 215.44346900318823,
+                    }
+                    vec_multiplier = VEC_MULTIPLIERS_SELECTED[subj]
+                    print(rows.columns)
+                    # for voxels in 
+                        # wt_vec = select_weight_for_roi(wt, subject, roi)
+                        # paragraph_steered = generate_with_steering(
+                        #         model,
+                        #         tokenizer,
+                        #         emb_layer,
+                        #         wt_vec,
+                        #         prompt = "Here is the first paragraph of a story:",
+                        #         vec_multiplier = vec_multiplier,
+                        #         max_new_tokens = max_new_tokens,
+                        #         sampling_params = sampling_params,
+                        #         seed = seed,
+                        # )
 
-                with open(join(EXPT_DIR, "story.txt"), "w") as f:
-                    f.write("\n\n".join(paragraphs))
-                joblib.dump(
-                    {"prompts": prompts, "paragraphs": paragraphs},
-                    join(EXPT_DIR, "prompts_paragraphs.pkl"),
-                )
+
+                # if pad_beginning_and_end:
+                #     START_PARAGRAPH = 'You are about to read a story told in the first person. Please pay attention to the details of the story.'
+                #     END_PARAGRAPH = 'The narrative story has now concluded. Hope you enjoyed passively reading the story.'
+                #     paragraphs = [START_PARAGRAPH] + \
+                #         paragraphs + [END_PARAGRAPH]
+                #     prompts = ['START'] + prompts + ['END']
+                #     DUMMY_START = pd.DataFrame(
+                #         [{'expl': 'START', 'top_ngrams_module_correct': [],
+                #             'subject': subject, 'prompt_suffix': ''}])
+                #     DUMMY_END = pd.DataFrame(
+                #         [{'expl': 'END', 'top_ngrams_module_correct': [],
+                #             'subject': subject, 'prompt_suffix': ''}])
+                #     rows = pd.concat([DUMMY_START, rows, DUMMY_END])
+
+                #     # overwrite rows
+                #     rows.to_csv(join(EXPT_DIR, "rows.csv"), index=False)
+                #     rows.to_pickle(join(EXPT_DIR, "rows.pkl"))
+
+                # with open(join(EXPT_DIR, "story.txt"), "w") as f:
+                #     f.write("\n\n".join(paragraphs))
+                # joblib.dump(
+                #     {"prompts": prompts, "paragraphs": paragraphs},
+                #     join(EXPT_DIR, "prompts_paragraphs.pkl"),
+                # )
