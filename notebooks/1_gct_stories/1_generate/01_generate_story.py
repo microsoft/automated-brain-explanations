@@ -12,7 +12,7 @@ import neuro.sasc.generate_helper
 from neuro import config
 from neuro.repr_steering import generate_with_steering, get_avg_weight_llama70, select_weight_for_roi
 from neuro import get_voxels
-
+import imodelsx.llm
 
 def get_rows_and_prompts_default(
     subject,
@@ -218,6 +218,7 @@ if __name__ == "__main__":
                     )
                 else:
                     print(rows)
+                    lm = imodelsx.llm.get_llm("gpt-5")
                     model_name = "meta-llama/Meta-Llama-3-70B"
                     tokenizer = AutoTokenizer.from_pretrained(model_name)
                     model = AutoModelForCausalLM.from_pretrained(
@@ -229,47 +230,81 @@ if __name__ == "__main__":
                     subj = subject.replace('UTS', 'S')
                     wt, emb_layer = get_avg_weight_llama70(subj)
                     VEC_MULTIPLIERS_SELECTED = {
-                        'S02': 316.22776601683796,
-                        'S03': 215.44346900318823,
+                        # 'S02': 14251.0,
+                        'S02': 7017.0,
+                        # 'S03': None, # to be filled later
                     }
+                    max_new_tokens = 180
+                    sampling_params = {
+                        'do_sample': True,
+                        # original tuning params
+                        # 'top_p': 0.9,
+                        # 'temperature': 0.8,
+
+                        # more diverse text
+                        'top_p': 0.6,
+                        'temperature': 1.2,
+                    }
+                    
                     vec_multiplier = VEC_MULTIPLIERS_SELECTED[subj]
-                    print(rows.columns)
-                    # for voxels in 
-                        # wt_vec = select_weight_for_roi(wt, subject, roi)
-                        # paragraph_steered = generate_with_steering(
-                        #         model,
-                        #         tokenizer,
-                        #         emb_layer,
-                        #         wt_vec,
-                        #         prompt = "Here is the first paragraph of a story:",
-                        #         vec_multiplier = vec_multiplier,
-                        #         max_new_tokens = max_new_tokens,
-                        #         sampling_params = sampling_params,
-                        #         seed = seed,
-                        # )
+                    # print(rows.columns)
+                    paragraphs = []
+                    running_prompt = ''
+                    MAX_N_CHARS = 300
+                    for i in range(len(prompts)):
+                        running_prompt += prompts[i]
+                        row = rows.iloc[i]
+                        roi_name = row.roi.replace('1', '').replace('2', '')
+                        wt_vec = select_weight_for_roi(wt, subj, roi_name)
+                        paragraph_steered = generate_with_steering(
+                                model,
+                                tokenizer,
+                                emb_layer,
+                                wt_vec,
+                                prompt = running_prompt,
+                                vec_multiplier = vec_multiplier,
+                                max_new_tokens = max_new_tokens,
+                                sampling_params = sampling_params,
+                                seed = seed,
+                        )
+                        paragraph_concl = lm(
+                            f'Return text that concludes the following paragraph coherently and non-repetitively in a sentence or less: {paragraph_steered}',
+                            use_cache=False,
+                            max_completion_tokens=30)
+                        print('PARAGRAPH CONCLUSION SUGGESTION:', repr(paragraph_concl))
+                        paragraph_steered += ' ' + paragraph_concl.strip()
+                        
+                        paragraphs.append(paragraph_steered)
+                        running_prompt += paragraph_steered 
+                        print('PROMPT START\n\n', running_prompt, '\n\nPROMPT END')
+                        running_prompt = running_prompt[-MAX_N_CHARS:]  # rough estimate of chars per token
 
+                if pad_beginning_and_end:
+                    START_PARAGRAPH = 'You are about to read a story told in the first person. Please pay attention to the details of the story.'
+                    END_PARAGRAPH = 'The narrative story has now concluded. Hope you enjoyed passively reading the story.'
+                    paragraphs = [START_PARAGRAPH] + \
+                        paragraphs + [END_PARAGRAPH]
+                    prompts = ['START'] + prompts + ['END']
+                    # DUMMY_START = pd.DataFrame(
+                        # [{'expl': 'START', 'top_ngrams_module_correct': [],
+                            # 'subject': subject, 'prompt_suffix': ''}])
+                    # DUMMY_END = pd.DataFrame(
+                        # [{'expl': 'END', 'top_ngrams_module_correct': [],
+                            # 'subject': subject, 'prompt_suffix': ''}])
+                    # create DUMMY_START and DUMMY_END rows based on the cols in rows
+                    DUMMY_START = pd.DataFrame(
+                        [{col: 'START' if col == 'expl' else [] if col == 'top_ngrams_module_correct' else subject if col == 'subject' else '' for col in rows.columns}])
+                    DUMMY_END = pd.DataFrame(
+                        [{col: 'END' if col == 'expl' else [] if col == 'top_ngrams_module_correct' else subject if col == 'subject' else '' for col in rows.columns}])
+                    rows = pd.concat([DUMMY_START, rows, DUMMY_END])
 
-                # if pad_beginning_and_end:
-                #     START_PARAGRAPH = 'You are about to read a story told in the first person. Please pay attention to the details of the story.'
-                #     END_PARAGRAPH = 'The narrative story has now concluded. Hope you enjoyed passively reading the story.'
-                #     paragraphs = [START_PARAGRAPH] + \
-                #         paragraphs + [END_PARAGRAPH]
-                #     prompts = ['START'] + prompts + ['END']
-                #     DUMMY_START = pd.DataFrame(
-                #         [{'expl': 'START', 'top_ngrams_module_correct': [],
-                #             'subject': subject, 'prompt_suffix': ''}])
-                #     DUMMY_END = pd.DataFrame(
-                #         [{'expl': 'END', 'top_ngrams_module_correct': [],
-                #             'subject': subject, 'prompt_suffix': ''}])
-                #     rows = pd.concat([DUMMY_START, rows, DUMMY_END])
+                    # overwrite rows with pad
+                    rows.to_csv(join(EXPT_DIR, "rows.csv"), index=False)
+                    rows.to_pickle(join(EXPT_DIR, "rows.pkl"))
 
-                #     # overwrite rows
-                #     rows.to_csv(join(EXPT_DIR, "rows.csv"), index=False)
-                #     rows.to_pickle(join(EXPT_DIR, "rows.pkl"))
-
-                # with open(join(EXPT_DIR, "story.txt"), "w") as f:
-                #     f.write("\n\n".join(paragraphs))
-                # joblib.dump(
-                #     {"prompts": prompts, "paragraphs": paragraphs},
-                #     join(EXPT_DIR, "prompts_paragraphs.pkl"),
-                # )
+                with open(join(EXPT_DIR, "story.txt"), "w") as f:
+                    f.write("\n\n".join(paragraphs))
+                joblib.dump(
+                    {"prompts": prompts, "paragraphs": paragraphs},
+                    join(EXPT_DIR, "prompts_paragraphs.pkl"),
+                )

@@ -28,9 +28,14 @@ from neuro.repr_steering import generate_with_steering, get_avg_weight_llama70, 
 
 if __name__ == "__main__":
     # Load weight
-    subject = 'S02'
+    # subject = 'S02'
+    subject = 'S03'
     max_new_tokens = 100
-    rois = ['RSC', 'OPA', 'PPA', 'IPS', 'pSTS', 'sPMv', 'EBA', 'OFA']
+    rois_dict = {
+        'S02': ['RSC', 'OPA', 'PPA', 'IPS', 'pSTS', 'sPMv', 'EBA', 'OFA'],
+        'S03': ['RSC', 'OPA', 'PPA', 'IPS', 'sPMv', 'EBA', 'OFA'],
+    }
+    rois = rois_dict[subject]
     sampling_params = {
         'do_sample': True,
         'top_p': 0.9,
@@ -55,8 +60,8 @@ if __name__ == "__main__":
     ).eval()
 
     print('generating...')
-    for roi in rois:
-        for seed in tqdm(seeds):
+    for seed in tqdm(seeds):
+        for roi in rois:
             if sampling_params['do_sample']:
                 save_dir = f'./repr_steering/{subject}/sampling_p={sampling_params["top_p"]}_t={sampling_params["temperature"]}/seed={seed}/{roi}'
             else:

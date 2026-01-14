@@ -241,7 +241,7 @@ def get_prompt_templates(version):
     PROMPTS = {
         # used without explanations
         'v1_steered': {
-            "prefix_first": "Here is the first paragraph of an interesting story:",
+            "prefix_first": "## Here is an interesting story told in the first person:\n\nOnce upon a time, I was",
             "prefix_next": "",
             "suffix": "",
 
@@ -307,7 +307,7 @@ def get_prompts(expls: List[str], examples_list: List[str], version):
             for (expl, examples) in zip(expls[1:], examples_list[1:])
         ]
     elif 'steered' in version:
-        prompts = [prompt_init] + ['Here is the next paragraph:'] * (len(expls) - 1)
+        prompts = [prompt_init] + [prompt_continue] * (len(expls) - 1)
 
     else:
         raise ValueError(version, "not supported in get_prompts")

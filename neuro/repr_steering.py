@@ -23,6 +23,7 @@ import torch
 from transformers import set_seed
 
 def get_avg_weight_llama70(subject):
+    print('getting enc weight...')
     data = joblib.load(join(config.RESULTS_DIR_LOCAL, 'results_best_ensemble.pkl'))
     rr, cols_varied, mets = data['r'], data['cols_varied'], data['mets']
     metric_sort = 'corrs_tune_pc_weighted_mean'
@@ -44,9 +45,17 @@ def get_avg_weight_llama70(subject):
     return wt, args.embedding_layer
 
 def select_weight_for_roi(wt, subject, roi_name):
+    roi_name = roi_name.replace('only2', 'only')  # handle PPA_only2 case
     # select weight for voxels
-    # if '_only' in 
+    rois_only = ['OPA_only', 'PPA_only', 'RSC_only']
+    if roi_name in rois_only:
+        rois_only_other = [r.split('_')[0] for r in rois_only if r != roi_name]
+        return select_weight_for_roi(wt, subject, roi_name.split('_')[0]) - \
+            0.5 * select_weight_for_roi(wt, subject, rois_only_other[0]) - \
+            0.5 * select_weight_for_roi(wt, subject, rois_only_other[1])
     rois_dict = joblib.load(join(REGION_IDXS_DIR, f'rois_{subject}.jbl'))
+    if subject == 'S03':
+        rois_dict['OPA'] = rois_dict['TOS']
     wt_roi = wt[:, rois_dict[roi_name]] # n_features x n_voxels_in_roi
     wt_roi_mean = wt_roi.mean(axis=1) # n_features
     return wt_roi_mean
@@ -97,6 +106,7 @@ def generate_with_steering(
     ) * vec_multiplier
 
     inputs = tokenizer(prompt, return_tensors="pt")
+    prompt_len = inputs["input_ids"].shape[-1]
     embed_device = model.get_input_embeddings().weight.device
     inputs = {k: v.to(embed_device) for k, v in inputs.items()}
 
@@ -122,4 +132,6 @@ def generate_with_steering(
         pbar.close()
 
 
-    return tokenizer.decode(out[0], skip_special_tokens=True)
+    generated_tokens = out[0, prompt_len:].detach()
+    # Only return the continuation without echoing the prompt
+    return tokenizer.decode(generated_tokens, skip_special_tokens=True)
