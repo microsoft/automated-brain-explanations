@@ -42,6 +42,7 @@ def get_avg_weight_llama70(subject):
     # preds_test = stim_test_delayed @ wt
     # # stim_test_delayed: np.ndarray
     #         n_time_points x(n_delays x n_features)
+    print('subject', subject, 'layer', args.embedding_layer, 'perf', args.corrs_test_mean)
     return wt, args.embedding_layer
 
 def select_weight_for_roi(wt, subject, roi_name):
