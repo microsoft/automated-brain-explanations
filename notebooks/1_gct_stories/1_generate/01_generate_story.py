@@ -118,6 +118,7 @@ if __name__ == "__main__":
     }
     # iterate over seeds
     seeds = range(1, 4)
+    # seeds = range(3, 4)
     # seeds = range(1, 2)
     # seeds = range(7, 12)
     # seeds = range(1, 10)
@@ -134,6 +135,7 @@ if __name__ == "__main__":
     # fname_suffix = '_v1'
     fname_suffix = ''
     pad_beginning_and_end = True
+    model = None
     for setting in [
         # "interactions",
         # "default",
@@ -220,12 +222,13 @@ if __name__ == "__main__":
                     print(rows)
                     lm = imodelsx.llm.get_llm("gpt-5")
                     model_name = "meta-llama/Meta-Llama-3-70B"
-                    tokenizer = AutoTokenizer.from_pretrained(model_name)
-                    model = AutoModelForCausalLM.from_pretrained(
-                        model_name,
-                        device_map="auto",
-                        torch_dtype=torch.bfloat16,
-                    ).eval()
+                    if model is None:
+                        model = AutoModelForCausalLM.from_pretrained(
+                            model_name,
+                            device_map="auto",
+                            torch_dtype=torch.bfloat16,
+                        ).eval()
+                        tokenizer = AutoTokenizer.from_pretrained(model_name)
 
                     subj = subject.replace('UTS', 'S')
                     wt, emb_layer = get_avg_weight_llama70(subj)
@@ -245,12 +248,15 @@ if __name__ == "__main__":
                         'top_p': 0.6,
                         'temperature': 1.2,
                     }
+                    use_gpt_for_roi_steering_transitions = True
+                    MAX_N_CHARS_RUNNING_PROMPT = 300
                     
                     vec_multiplier = VEC_MULTIPLIERS_SELECTED[subj]
                     # print(rows.columns)
                     paragraphs = []
                     running_prompt = ''
-                    MAX_N_CHARS = 300
+                    
+                    
                     for i in range(len(prompts)):
                         running_prompt += prompts[i]
                         row = rows.iloc[i]
@@ -267,17 +273,35 @@ if __name__ == "__main__":
                                 sampling_params = sampling_params,
                                 seed = seed,
                         )
-                        paragraph_concl = lm(
-                            f'Return text that concludes the following paragraph coherently and non-repetitively in a sentence or less: {paragraph_steered}',
-                            use_cache=False,
-                            max_completion_tokens=30)
-                        print('PARAGRAPH CONCLUSION SUGGESTION:', repr(paragraph_concl))
-                        paragraph_steered += ' ' + paragraph_concl.strip()
+                        if use_gpt_for_roi_steering_transitions:
+                            # paragraph_steered = '''## Here is an interesting story told in the first person:
+# Once upon a time, I was the proud owner of a brand new MacBook Pro. My boss was a Mac man and I was in the mood to splurge. I loved my MacBook Pro, but when I had to buy a replacement for my aging Del l laptop, I decided to go with a MacBook. I was a bit concerned that the MacBook would be a bit cram ped, but I had a chance to check out the MacBook Pro at the Apple Store and it looked fine. So I bou ght the MacBook and it was just as I expected. I love my MacBook. But when I had to buy a replacemen t for my aging Dell laptop, I decided to go with a MacBook. I was a bit concerned that the MacBook w ould be a bit cramped, but I had a chance to check out the MacBook Pro at the Apple Store and it loo ked fine. So I bought the MacBook and it was just as I expected. I love my MacBook.'''
+
+                            prompt = f"""Read the text below and then answer the question that follows.
+<TEXT>
+{paragraph_steered}
+</TEXT>
+
+QUESTION: Return one and a half concluding sentences for the text. The concluding sentences should start a story, rather than being repetitive. Do not add any prefix characters, return the text that exactly continues the story."""
+                            paragraph_concl = lm(
+                                prompt,
+                                max_completion_tokens=None,
+                                reasoning_effort='low',
+                                use_cache=False)
+                            # remove any leading or trailing ellipsis or quotes
+                            paragraph_concl = paragraph_concl.strip("…\"'")
+                            # add space if needed
+                            if not paragraph_steered.endswith(' ') and not paragraph_concl.startswith(' '):
+                                paragraph_steered += ' '
+                            print('PARAGRAPH', repr(paragraph_steered))
+                            print('PARAGRAPH CONCLUSION SUGGESTION:', repr(paragraph_concl))
+                            # print('PARAGRAPH CONCLUSION SUGGESTION:', repr(paragraph_concl))
+                            paragraph_steered += paragraph_concl
                         
                         paragraphs.append(paragraph_steered)
                         running_prompt += paragraph_steered 
                         print('PROMPT START\n\n', running_prompt, '\n\nPROMPT END')
-                        running_prompt = running_prompt[-MAX_N_CHARS:]  # rough estimate of chars per token
+                        running_prompt = running_prompt[-MAX_N_CHARS_RUNNING_PROMPT:]  # rough estimate of chars per token
 
                 if pad_beginning_and_end:
                     START_PARAGRAPH = 'You are about to read a story told in the first person. Please pay attention to the details of the story.'
@@ -308,3 +332,5 @@ if __name__ == "__main__":
                     {"prompts": prompts, "paragraphs": paragraphs},
                     join(EXPT_DIR, "prompts_paragraphs.pkl"),
                 )
+                # clear torch cache
+                torch.cuda.empty_cache()
