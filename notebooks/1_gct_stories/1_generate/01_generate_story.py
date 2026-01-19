@@ -146,8 +146,8 @@ if __name__ == "__main__":
         'roi_steered',
     ]:  # default, interactions, polysemantic
         for subject in [
-            "UTS02",
-            # "UTS03",
+            # "UTS02",
+            "UTS03",
         ]:  # , "UTS03"]:  # ["UTS01", "UTS03"]:
             for seed in seeds:
                 # for version in ["v5_noun"]:
@@ -233,23 +233,25 @@ if __name__ == "__main__":
                     subj = subject.replace('UTS', 'S')
                     wt, emb_layer = get_avg_weight_llama70(subj)
                     VEC_MULTIPLIERS_SELECTED = {
-                        # 'S02': 14251.0,
-                        'S02': 7017.0,
-                        # 'S03': None, # to be filled later
+                        'S02': 14251.0,
+                        # 'S02': 7017.0,
+                        'S03': 24244.0,
+                        # 'S03': 11937.0,
                     }
                     max_new_tokens = 180
                     sampling_params = {
                         'do_sample': True,
                         # original tuning params
-                        # 'top_p': 0.9,
-                        # 'temperature': 0.8,
+                        'top_p': 0.9,
+                        'temperature': 0.8,
 
                         # more diverse text
-                        'top_p': 0.6,
-                        'temperature': 1.2,
+                        # 'top_p': 0.6,
+                        # 'temperature': 1.2,
                     }
                     use_gpt_for_roi_steering_transitions = True
                     MAX_N_CHARS_RUNNING_PROMPT = 300
+                    no_continuity = True
                     
                     vec_multiplier = VEC_MULTIPLIERS_SELECTED[subj]
                     # print(rows.columns)
@@ -262,18 +264,22 @@ if __name__ == "__main__":
                         row = rows.iloc[i]
                         roi_name = row.roi.replace('1', '').replace('2', '')
                         wt_vec = select_weight_for_roi(wt, subj, roi_name)
+                        if no_continuity:
+                            prompt = 'Here is the first paragraph of a story:'
+                        else:
+                            prompt = running_prompt
                         paragraph_steered = generate_with_steering(
                                 model,
                                 tokenizer,
                                 emb_layer,
                                 wt_vec,
-                                prompt = running_prompt,
+                                prompt = prompt,
                                 vec_multiplier = vec_multiplier,
                                 max_new_tokens = max_new_tokens,
                                 sampling_params = sampling_params,
                                 seed = seed,
                         )
-                        if use_gpt_for_roi_steering_transitions:
+                        if use_gpt_for_roi_steering_transitions and not no_continuity:
                             # paragraph_steered = '''## Here is an interesting story told in the first person:
 # Once upon a time, I was the proud owner of a brand new MacBook Pro. My boss was a Mac man and I was in the mood to splurge. I loved my MacBook Pro, but when I had to buy a replacement for my aging Del l laptop, I decided to go with a MacBook. I was a bit concerned that the MacBook would be a bit cram ped, but I had a chance to check out the MacBook Pro at the Apple Store and it looked fine. So I bou ght the MacBook and it was just as I expected. I love my MacBook. But when I had to buy a replacemen t for my aging Dell laptop, I decided to go with a MacBook. I was a bit concerned that the MacBook w ould be a bit cramped, but I had a chance to check out the MacBook Pro at the Apple Store and it loo ked fine. So I bought the MacBook and it was just as I expected. I love my MacBook.'''
 
@@ -297,11 +303,15 @@ QUESTION: Return one and a half concluding sentences for the text. The concludin
                             print('PARAGRAPH CONCLUSION SUGGESTION:', repr(paragraph_concl))
                             # print('PARAGRAPH CONCLUSION SUGGESTION:', repr(paragraph_concl))
                             paragraph_steered += paragraph_concl
-                        
+                            running_prompt += paragraph_steered 
+                            print('PROMPT START\n\n', running_prompt, '\n\nPROMPT END')
+                            running_prompt = running_prompt[-MAX_N_CHARS_RUNNING_PROMPT:]  # rough estimate of chars per token
+                        if no_continuity:
+                            # strip quotes, leading/trailing spaces, ellipses, newlines
+                            paragraph_steered = paragraph_steered.strip('\"\' \n…')
+                            print('PARAGRAPH', repr(paragraph_steered))
                         paragraphs.append(paragraph_steered)
-                        running_prompt += paragraph_steered 
-                        print('PROMPT START\n\n', running_prompt, '\n\nPROMPT END')
-                        running_prompt = running_prompt[-MAX_N_CHARS_RUNNING_PROMPT:]  # rough estimate of chars per token
+                        
 
                 if pad_beginning_and_end:
                     START_PARAGRAPH = 'You are about to read a story told in the first person. Please pay attention to the details of the story.'

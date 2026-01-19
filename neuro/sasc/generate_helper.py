@@ -415,6 +415,10 @@ def compute_expl_data_match_heatmap(val, expls, paragraphs):
         for j in range(n):
             text = paragraphs[j].lower()
             words = text.split()
+            if len(words) == 1:
+                words.append(' ')
+            if len(words) == 0:
+                words = [' ', ' ']
 
             ngrams = imodelsx.util.generate_ngrams_list(text, ngrams=3)
             ngrams = [words[0], words[0] + " " + words[1]] + ngrams

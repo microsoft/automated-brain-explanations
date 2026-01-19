@@ -110,6 +110,11 @@ def get_story_scores(val, expls, paragraphs):
         expl = expls[i].lower()
         text = paragraphs[i]
         words = text.split()
+        if len(words) == 1:
+            words.append(' ')
+        if len(words) == 0:
+            words = [' ', ' ']
+        # print('words', words)
 
         ngrams = imodelsx.util.generate_ngrams_list(text.lower(), ngrams=3)
         ngrams = [words[0], words[0] + " " + words[1]] + ngrams

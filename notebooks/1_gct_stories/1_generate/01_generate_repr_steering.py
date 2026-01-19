@@ -28,8 +28,8 @@ from neuro.repr_steering import generate_with_steering, get_avg_weight_llama70, 
 
 if __name__ == "__main__":
     # Load weight
-    # subject = 'S02'
-    subject = 'S03'
+    subject = 'S02'
+    # subject = 'S03'
     max_new_tokens = 100
     rois_dict = {
         'S02': ['RSC', 'OPA', 'PPA', 'IPS', 'pSTS', 'sPMv', 'EBA', 'OFA'],

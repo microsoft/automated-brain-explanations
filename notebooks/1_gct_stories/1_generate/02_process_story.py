@@ -8,23 +8,23 @@ import pandas as pd
 import sys
 from IPython.display import display, HTML
 from typing import List
-from sasc.modules.emb_diff_module import EmbDiffModule
+# from sasc.modules.emb_diff_module import EmbDiffModule
 import numpy as np
 import matplotlib
 import imodelsx.util
 from copy import deepcopy
 import re
-import sasc.generate_helper
-import sasc.viz
+import neuro.sasc.generate_helper
+import neuro.sasc.viz
 import scipy.special
-from spacy.tokenizer import Tokenizer
-from spacy.lang.en import English
-from sasc.evaluate import D5_Validator
-import openai
-from sasc.modules.fmri_module import fMRIModule
+# from spacy.tokenizer import Tokenizer
+# from spacy.lang.en import English
+from neuro.sasc.evaluate import D5_Validator
+# import openai
+# from sasc.modules.fmri_module import fMRIModule
 from pprint import pprint
 import joblib
-from sasc.config import RESULTS_DIR
+from neuro import config
 import torch.cuda
 import scipy.special
 
@@ -35,9 +35,9 @@ def explanation_story_match(EXPT_DIR, expls, paragraphs, prompts):
     val = D5_Validator()
 
     # visualize single story
-    scores_data_story = sasc.viz.get_story_scores(val, expls, paragraphs)
+    scores_data_story = neuro.sasc.viz.get_story_scores(val, expls, paragraphs)
     joblib.dump(scores_data_story, join(EXPT_DIR, "scores_data_story.pkl"))
-    s_data = sasc.generate_helper.viz_paragraphs(
+    s_data = neuro.sasc.generate_helper.viz_paragraphs(
         paragraphs,
         scores_data_story,
         expls,
@@ -51,14 +51,14 @@ def explanation_story_match(EXPT_DIR, expls, paragraphs, prompts):
 
     # compute scores heatmap
     # print('expls', expls, 'paragraphs', paragraphs)
-    scores_mean, scores_all = sasc.generate_helper.compute_expl_data_match_heatmap(
+    scores_mean, scores_all = neuro.sasc.generate_helper.compute_expl_data_match_heatmap(
         val, expls, paragraphs
     )
     joblib.dump(
         {"scores_mean": scores_mean, "scores_all": scores_all},
         join(EXPT_DIR, "scores_data.pkl"),
     )
-    sasc.viz.heatmap(scores_mean.T, expls, ylab="Story", xlab="Explanation")
+    neuro.sasc.viz.heatmap(scores_mean.T, expls, ylab="Story", xlab="Explanation")
     # plt.savefig(join(EXPT_DIR, "story_data_match.png"), dpi=300)
     plt.savefig(join(EXPT_DIR, "story_data_match.pdf"), bbox_inches="tight")
 
@@ -68,12 +68,13 @@ def module_story_match(EXPT_DIR, expls, paragraphs, voxel_nums, subject, setting
         return
 
     # compute with paragraphs overlapping into each other
-    # sasc.generate_helper.compute_expl_module_match_heatmap
-    if setting == 'roi':
+    # neuro.sasc.generate_helper.compute_expl_module_match_heatmap
+    if 'roi' in setting:
         func = partial(
-            sasc.generate_helper.compute_expl_module_match_heatmap, restrict_weights=False)
+            neuro.sasc.generate_helper.compute_expl_module_match_heatmap, restrict_weights=False)
+        print(f'using roi version with', voxel_nums.shape, voxel_nums[0], 'voxel_nums', voxel_nums[1])
     else:
-        func = sasc.generate_helper.compute_expl_module_match_heatmap_cached_single_subject
+        func = neuro.sasc.generate_helper.compute_expl_module_match_heatmap_cached_single_subject
     (scores_mod, _, all_scores) = func(expls, paragraphs, voxel_nums, subject)
 
     joblib.dump(
@@ -87,7 +88,7 @@ def module_story_match(EXPT_DIR, expls, paragraphs, voxel_nums, subject, setting
     # make plot
     s = scores_mod.T
     s = scipy.special.softmax(s, axis=0)
-    sasc.viz.heatmap(s, expls, ylab="Story", xlab="Module")
+    neuro.sasc.viz.heatmap(s, expls, ylab="Story", xlab="Module")
 
     diag_diff = (
         np.mean(np.diag(s))
@@ -117,7 +118,7 @@ def module_story_match(EXPT_DIR, expls, paragraphs, voxel_nums, subject, setting
 
 
 def sweep_default_and_polysemantic(subjects=["UTS01", "UTS03"], setting="default", filter='may9'):
-    EXPT_PARENT_DIR = join(RESULTS_DIR, "stories", setting)
+    EXPT_PARENT_DIR = join(config.STORIES_DIR_GCT, setting)
     EXPT_NAMES = sorted(os.listdir(EXPT_PARENT_DIR))
 
     # filter EXPT_NAMES that don't contain any of the subjects
@@ -145,7 +146,8 @@ def sweep_default_and_polysemantic(subjects=["UTS01", "UTS03"], setting="default
             rows = pd.read_csv(join(EXPT_DIR, "rows.csv"))
             prompts = open(join(EXPT_DIR, "prompts.txt")).read().split('\n\n')
             paragraphs = open(join(EXPT_DIR, "story.txt")).read().split('\n\n')
-
+        # fill empty string with 0
+        rows['voxel_nums'] = rows['voxel_nums'].replace('', 0)
         expls = rows.expl.values
 
         # run things
@@ -168,7 +170,7 @@ def sweep_default_and_polysemantic(subjects=["UTS01", "UTS03"], setting="default
 
 def sweep_interactions(subjects=["UTS01", "UTS03"]):
     setting = 'interactions'
-    EXPT_PARENT_DIR = join(RESULTS_DIR, "stories", setting)
+    EXPT_PARENT_DIR = join(config.STORIES_DIR_GCT, setting)
     EXPT_NAMES = sorted(os.listdir(EXPT_PARENT_DIR))
     # iterate over seeds
     # seeds = range(1, 8)
@@ -182,7 +184,7 @@ def sweep_interactions(subjects=["UTS01", "UTS03"]):
     print('found', EXPT_NAMES)
 
     for EXPT_NAME in EXPT_NAMES:
-        STORIES_DIR = join(RESULTS_DIR, "stories")
+        STORIES_DIR = config.STORIES_DIR_GCT #, "stories")
         # EXPT_NAME = f"{subject.lower()}___jun14___seed={seed}"
         EXPT_DIR = join(STORIES_DIR, setting, EXPT_NAME)
         # rows = joblib.load(join(EXPT_DIR, "rows1.pkl"))
@@ -219,5 +221,8 @@ if __name__ == "__main__":
     # sweep_default_and_polysemantic(subjects=['UTS01'], setting="interactions")
     # sweep_default_and_polysemantic(
     # subjects=['UTS02'], setting="qa", filter='')
-    sweep_default_and_polysemantic(
-        subjects=['UTS03'], setting="roi", filter='')
+    # sweep_default_and_polysemantic(
+        # subjects=['UTS03'], setting="roi", filter='')
+    for setting in os.listdir(os.path.join(config.STORIES_DIR_GCT, 'roi_steered'))[::-1]:
+        sweep_default_and_polysemantic(
+            subjects=['UTS02'], setting=f"roi_steered/{setting}", filter='')
