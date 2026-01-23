@@ -4,8 +4,8 @@
 
 description: automated-brain-explanations
 environment:
-  # image: amlt-sing/acpt-torch2.7.1-py3.10-cuda12.6-ubuntu22.04
-  image: amlt-sing/pytorch
+  image: amlt-sing/acpt-torch2.7.1-py3.10-cuda12.6-ubuntu22.04
+  # image: amlt-sing/pytorch
   # image: amlt-sing/acpt-rocm6.2_ubuntu22.04_py3.10_pytorch2.5.1
   setup:
     - curl -LsSf https://astral.sh/uv/install.sh | sh # install uv
