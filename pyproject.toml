@@ -44,10 +44,6 @@ dependencies = [
     "cairosvg>=2.8.2",
     "sentencepiece>=0.2.1",
     "bert-score>=0.3.13",
-]
-
-[project.optional-dependencies]
-dev = [
     "pytest",
     "seaborn",
     "dvu",
@@ -56,7 +52,6 @@ dev = [
 ]
 
 [tool.uv.sources]
-imodelsx = { path = "../imodelsX", editable = true }
 amlt = { index = "msr" }
 
 [[tool.uv.index]]

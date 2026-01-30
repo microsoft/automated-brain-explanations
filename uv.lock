@@ -1777,7 +1777,7 @@ wheels = [
 [[package]]
 name = "imodelsx"
 version = "1.0.11"
-source = { editable = "../imodelsX" }
+source = { registry = "https://msrpypi.azurewebsites.net/stable/leloojoo" }
 dependencies = [
     { name = "datasets" },
     { name = "dict-hash" },
@@ -1793,38 +1793,9 @@ dependencies = [
     { name = "tqdm" },
     { name = "transformers", extra = ["torch"] },
 ]
-
-[package.metadata]
-requires-dist = [
-    { name = "datasets" },
-    { name = "dict-hash" },
-    { name = "imodels" },
-    { name = "langchain" },
-    { name = "numpy" },
-    { name = "pandas" },
-    { name = "pyyaml" },
-    { name = "scikit-learn" },
-    { name = "scipy" },
-    { name = "spacy" },
-    { name = "torch" },
-    { name = "tqdm" },
-    { name = "transformers", extras = ["torch"] },
-]
-provides-extras = ["optional"]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "dvu" },
-    { name = "gdown" },
-    { name = "jupyter" },
-    { name = "jupytext" },
-    { name = "matplotlib" },
-    { name = "pdoc3" },
-    { name = "pmlb" },
-    { name = "pytest" },
-    { name = "pytest-cov" },
-    { name = "slurmpy" },
-    { name = "tqdm" },
+sdist = { url = "https://files.pythonhosted.org/packages/db/dd/4a820ec400f13d318ab98eebd1b59a6ef050ceb30967ea2785c2b2ea0688/imodelsx-1.0.11.tar.gz", hash = "sha256:61534070fd7971813fed7d88d3f210a97a2c00eff0eea6b2d9315befafe61139", size = 105606, upload-time = "2025-08-25T18:55:40.554Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/61/7b/71fb86383f4b93858a82cb78364e9aa6ff4d3eb556db32b3aff4b1b6229e/imodelsx-1.0.11-py3-none-any.whl", hash = "sha256:f7cb239add9a84ffb7205f474681730c96762f0fb963a0fee6e8cc0dc6452b28", size = 119418, upload-time = "2025-08-25T18:55:39.299Z" },
 ]
 
 [[package]]
@@ -3116,17 +3087,22 @@ dependencies = [
     { name = "cairosvg" },
     { name = "datasets" },
     { name = "dict-hash" },
+    { name = "dvu" },
     { name = "imodels" },
     { name = "imodelsx" },
+    { name = "ipython" },
+    { name = "jupyter" },
     { name = "langchain" },
     { name = "numpy" },
     { name = "openai" },
     { name = "pandas" },
     { name = "pycortex" },
+    { name = "pytest" },
     { name = "pyyaml" },
     { name = "ridge-utils" },
     { name = "scikit-learn" },
     { name = "scipy" },
+    { name = "seaborn" },
     { name = "sentence-transformers" },
     { name = "sentencepiece" },
     { name = "spacy" },
@@ -3135,15 +3111,6 @@ dependencies = [
     { name = "torch" },
     { name = "tqdm" },
     { name = "transformers", extra = ["torch"] },
-]
-
-[package.optional-dependencies]
-dev = [
-    { name = "dvu" },
-    { name = "ipython" },
-    { name = "jupyter" },
-    { name = "pytest" },
-    { name = "seaborn" },
 ]
 
 [package.metadata]
@@ -3155,22 +3122,22 @@ requires-dist = [
     { name = "cairosvg", specifier = ">=2.8.2" },
     { name = "datasets", specifier = ">=4.0.0" },
     { name = "dict-hash", specifier = ">=1.3.6" },
-    { name = "dvu", marker = "extra == 'dev'" },
+    { name = "dvu" },
     { name = "imodels", specifier = ">=2.0.0" },
-    { name = "imodelsx", editable = "../imodelsX" },
-    { name = "ipython", marker = "extra == 'dev'" },
-    { name = "jupyter", marker = "extra == 'dev'" },
+    { name = "imodelsx" },
+    { name = "ipython" },
+    { name = "jupyter" },
     { name = "langchain", specifier = ">=0.3.27" },
     { name = "numpy", specifier = ">=2.2.6" },
     { name = "openai" },
     { name = "pandas", specifier = ">=2.3.1" },
     { name = "pycortex" },
-    { name = "pytest", marker = "extra == 'dev'" },
+    { name = "pytest" },
     { name = "pyyaml", specifier = ">=6.0.2" },
     { name = "ridge-utils" },
     { name = "scikit-learn", specifier = ">=1.2.0" },
     { name = "scipy", specifier = ">=1.15.3" },
-    { name = "seaborn", marker = "extra == 'dev'" },
+    { name = "seaborn" },
     { name = "sentence-transformers", specifier = ">=5.1.0" },
     { name = "sentencepiece", specifier = ">=0.2.1" },
     { name = "spacy", specifier = ">=3.8.7" },
@@ -3180,7 +3147,6 @@ requires-dist = [
     { name = "tqdm", specifier = ">=4.67.1" },
     { name = "transformers", extras = ["torch"], specifier = ">=4.23.1" },
 ]
-provides-extras = ["dev"]
 
 [[package]]
 name = "nibabel"
