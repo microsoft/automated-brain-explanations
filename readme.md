@@ -5,15 +5,14 @@
   <img src="https://img.shields.io/badge/numpy-%3E=2.0-blue">
 </p>
 <p align="center">
-  We’ve been studying how to <i>scalably</i> answer this question using 
+  We’ve been studying how to <i>scalably</i> answer this question using
   <b>LLMs</b> and <b>large-scale brain-imaging datasets</b>.
-  Together, these let us automatically generate and test scientific hypotheses about language processing in the brain, 
+  Together, these let us automatically generate and test scientific hypotheses about language processing in the brain,
   potentially enabling a new paradigm for scientific research.
   This repo contains code for running these analyses.
 </p>
 
 <img align="center" style="width: 100%; max-width:100%;" src="https://raw.githubusercontent.com/microsoft/automated-brain-explanations/main/docs/qa_map.svg">
-
 
 -----
 
@@ -22,7 +21,7 @@
 **This repo contains code underlying 2 neuroscience studies:**
 
 <details>
-<summary>Generative causal testing to bridge data-driven models and scientific theories in language neuroscience <a href="https://arxiv.org/abs/2410.00812">(Antonello*, Singh*, et al., 2024, arXiv)</a>
+<summary>Generative causal testing to bridge data-driven models and scientific theories in language neuroscience <a href="https://arxiv.org/abs/2410.00812">(Antonello*, Singh*, et al., 2024, Nature neuroscience)</a>
 </summary>
 <br>
 Generative causal testing (GCT) is a framework for generating concise explanations of language selectivity in the brain from predictive models and then testing those explanations in follow-up experiments using LLM-generated stimuli.
@@ -78,10 +77,10 @@ Can convert fMRI responses to continuous vector representations that can be used
 </details>
 <br>
 
-
 ### Setting up
 
 **Dataset**
+
 - To quickstart, just download the responses / wordsequences for 3 subjects from the [encoding scaling laws paper](https://utexas.app.box.com/v/EncodingModelScalingLaws/folder/230420528915)
   - This is all the data you need if you only want to analyze 3 subjects and don't want to make flatmaps
 - To run full experiments, go through the paths in `neuro/config.py` and download data to the appropriate locations from [this box folder](https://utexas.box.com/s/7ur0fsr52nephxp96hs5dxm99rk2v1u0)
@@ -91,6 +90,7 @@ Can convert fMRI responses to continuous vector representations that can be used
   - It has everything needed, but if you want to visualize the results on a flatmap, you need to download the relevant PCs from [here](https://utexas.box.com/s/7ur0fsr52nephxp96hs5dxm99rk2v1u0)
 
 **Code**
+
 - Install using [uv](https://docs.astral.sh/uv/). Clone the repo, `cd` into the repo, run `uv add git+https://github.com/csinva/imodelsX`, then run `uv sync`. This will locally install the `neuro` package
 - Useful functions
   - Loading responses
@@ -102,10 +102,12 @@ Can convert fMRI responses to continuous vector representations that can be used
     - Uses `{root_dir}/ds003020/derivative/respdict.json` to get the length of each story
 
 **Demo**
+
 - `python experiments/02_fit_encoding.py`
-    - Running this script with no args runs a simple small run. This script takes many relevant arguments through argparse to run different experiments
+  - Running this script with no args runs a simple small run. This script takes many relevant arguments through argparse to run different experiments
 
 ### External links
+
 - Big thanks to folks that released open-source brain-imaging datasets, especially the [HuthLab fMRI passive listening dataset](https://openneuro.org/datasets/ds003020/versions/3.1.0) and the [Podcast ECoG dataset](https://www.nature.com/articles/s41597-025-05462-2)
 - See related [fMRI experiments](https://github.com/csinva/fmri)
 - Built from [this template](https://github.com/csinva/cookiecutter-ml-research)
