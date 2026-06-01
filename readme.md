@@ -21,7 +21,7 @@
 **This repo contains code underlying 2 neuroscience studies:**
 
 <details>
-<summary>Generative causal testing to bridge data-driven models and scientific theories in language neuroscience <a href="https://arxiv.org/abs/2410.00812">(Antonello*, Singh*, et al., 2024, Nature neuroscience)</a>
+<summary>Generative causal testing to bridge data-driven models and scientific theories in language neuroscience <a href="https://arxiv.org/abs/2410.00812">(Antonello*, Singh*, et al., 2026, Nature neuroscience)</a>
 </summary>
 <br>
 Generative causal testing (GCT) is a framework for generating concise explanations of language selectivity in the brain from predictive models and then testing those explanations in follow-up experiments using LLM-generated stimuli.
